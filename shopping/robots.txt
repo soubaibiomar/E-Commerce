@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+Allow: /index.php
+Allow: /category.php
+Allow: /sub-category.php
+Allow: /product-details.php
+Allow: /search-result.php
+Allow: /assets/
+
+# Disallow private user and administrative endpoints
+Disallow: /admin/
+Disallow: /my-cart.php
+Disallow: /my-account.php
+Disallow: /my-wishlist.php
+Disallow: /my-orders.php
+Disallow: /order-history.php
+Disallow: /pending-orders.php
+Disallow: /order-details.php
+Disallow: /payment-method.php
+Disallow: /track-orders.php
+Disallow: /track-order.php
+Disallow: /login.php
+Disallow: /signup.php
+Disallow: /forgot-password.php
+Disallow: /change-password.php
+
+# Sitemap declaration
+Sitemap: http://localhost:8085/sitemap.xml

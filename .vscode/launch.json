@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "ZeyTech Operations Console (Port 8085)",
+            "url": "http://localhost:8085/zeytech-ops-console.html",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "ZeyTech Platform Dashboard (Port 8085)",
+            "url": "http://localhost:8085/zeytech-platform.php",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "ZeyTech Storefront (Port 8085)",
+            "url": "http://localhost:8085/index.php",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "n8n Master Canvas (Port 5678)",
+            "url": "http://localhost:5678/",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

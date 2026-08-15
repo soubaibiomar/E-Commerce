@@ -1,0 +1,41 @@
+# Environment variables
+.env
+!.env.example
+
+# Build artifacts & caches
+.next/
+*/.next/
+**/.next/
+dist/
+build/
+out/
+.cache/
+
+# Node dependencies
+node_modules/
+*/node_modules/
+**/node_modules/
+
+# Logs and runtime artifacts
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,1205 @@
+{
+  "name": "ZeyTech — Master AI Commerce OS (Complete Production Architecture)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "zeytech-commerce-os",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "entry-webhook",
+      "name": "1a. AI Entry Gateway (Web)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "entry-chat",
+      "name": "1b. Interactive Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        280
+      ],
+      "webhookId": "zeytech-interactive-chat"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telegram-admin-webhook",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "tg-admin-webhook",
+      "name": "1c. Telegram / WhatsApp Inbound Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sale-completed-event",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "sale-event-webhook",
+      "name": "1d. Business Events Webhook Ingest",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "cron-daily-report",
+      "name": "1e. 24h Autonomous Daily Report Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        100,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "error-trigger-node",
+      "name": "1f. Global Platform Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "payment-provider-webhook",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "payment-webhook",
+      "name": "1g. Payment Provider Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Unified Inbound Envelope, Sanitization & Omnichannel Guardrails (Gap 24, 9, 5)\nconst rawInput = $input.first().json.body || $input.first().json;\nconst message = (rawInput.message || rawInput.chatInput || rawInput.text || 'Hello').trim();\nconst senderId = rawInput.senderId || rawInput.chatId || rawInput.phone || 'ANONYMOUS';\nconst channel = rawInput.channel || (rawInput.chatId ? 'TELEGRAM' : (rawInput.phone ? 'WHATSAPP' : 'WEB'));\nconst userRole = rawInput.userRole || (channel === 'TELEGRAM' && rawInput.isAuthorized ? 'ADMIN' : 'CUSTOMER');\nconst traceId = `tr_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;\nconst authToken = rawInput.authToken || '';\n\n// Injection & PII Sanitization\nconst sanitized = message.replace(/<script.*?>.*?<\\/script>/gi, '').replace(/drop table|delete from/gi, '[BLOCKED]').trim();\n\nreturn [{\n  json: {\n    traceId: traceId,\n    channel: channel,\n    senderId: senderId,\n    userRole: userRole,\n    message: sanitized,\n    productId: rawInput.productId || 1,\n    currency: rawInput.currency || 'USD',\n    authToken: authToken,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "unified-inbound-envelope",
+      "name": "2. Unified Inbound Envelope & Guardrails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-rate-limit.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"senderId\": \"{{ $json.senderId }}\",\n  \"channel\": \"{{ $json.channel }}\",\n  \"windowSeconds\": 60,\n  \"maxRequests\": 20\n}"
+      },
+      "id": "rate-limit-check",
+      "name": "2a. Rate Limit Check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "rate-limit-gate",
+      "name": "2b. Rate Limit Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        840,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rate-limited response — sent back on the sender's own channel instead of reaching the Supervisor (Gap 9)\nconst envelope = $('2. Unified Inbound Envelope & Guardrails').first().json;\nreturn [{\n  json: {\n    traceId: envelope.traceId,\n    channel: envelope.channel,\n    senderId: envelope.senderId,\n    reply: 'You are sending messages too quickly. Please wait a moment and try again.',\n    status: 'RATE_LIMITED'\n  }\n}];"
+      },
+      "id": "rate-limited-response",
+      "name": "2c. Rate Limited Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-budget-guard.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"scope\": \"daily\",\n  \"maxSpendUSD\": 25\n}"
+      },
+      "id": "budget-guard-check",
+      "name": "2d. LLM Budget Guard Check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.underBudget }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "budget-gate",
+      "name": "2e. Budget Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Daily LLM budget cap reached (Gap 6 & 16) — queue for a human instead of calling the paid API further\nconst envelope = $('2. Unified Inbound Envelope & Guardrails').first().json;\nreturn [{\n  json: {\n    traceId: envelope.traceId,\n    channel: envelope.channel,\n    senderId: envelope.senderId,\n    reply: 'Thanks for your message — our team will follow up shortly.',\n    status: 'BUDGET_CAP_REACHED_QUEUED_FOR_HUMAN'\n  }\n}];"
+      },
+      "id": "budget-exceeded-response",
+      "name": "2f. Budget Exceeded — Human Queue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are the ZeyTech AI SUPERVISOR. You orchestrate 15 Specialized Agents:\n1. Sales Agent (Product discovery, comparison, sales assistance)\n2. Customer Support Agent (FAQs, order help, returns, warranties)\n3. Product Expert Agent (Fiche Technique, hardware specs, 3D WebGL models)\n4. Recommendation Agent (Personalized & next-best-product suggestions)\n5. Order Management Agent (Order tracking, cancellation rules, carrier updates)\n6. Inventory Agent (Stock monitoring, warehouse Hub-A1 status)\n7. Pricing & Promotion Agent (Discounts, coupon code ZEYTECH10VIP)\n8. Marketing Agent (Campaign generation, personalized copy)\n9. Business Analytics Agent (Revenue, conversion rate, AOV, KPIs)\n10. Forecasting Agent (Demand forecasting, 7-day stockout prediction)\n11. Fraud Detection Agent (Risk scoring, anomaly detection)\n12. CRM Agent (Customer 360 profile, retention analysis)\n13. Content Generation Agent (SEO descriptions, multilingual localization)\n14. Admin Copilot (Executive operational assistant)\n15. Notification Agent (Telegram, WhatsApp, Email omnichannel formatting)\n\nMultilingual: Automatically respond in Moroccan Darija when spoken in Arabic/Darija with MAD currency formatting.\nControlled Tools: Use queryCommerceDatabase, manageInventoryReservation, verifyCustomerIdentity, and processOrderException to fetch and mutate real data without hallucination."
+        }
+      },
+      "id": "ai-supervisor-node",
+      "name": "3. AI SUPERVISOR / ROUTER",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1560,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:1b",
+        "options": {
+          "baseUrl": "http://host.docker.internal:11434",
+          "temperature": 0.3
+        }
+      },
+      "id": "ollama-llm-node",
+      "name": "4. Ollama Local LLM / Cloud Engine",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "memory-node",
+      "name": "5. Short & Long Context Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1560,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "name": "queryCommerceDatabase",
+        "description": "Query live products, Fiche Technique specifications, 3-state stock quantities, orders, and business analytics from MariaDB.",
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-chat.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $fromAI('message', 'query description') }}\",\n  \"productId\": {{ $fromAI('productId', 'optional product id', 'number') || 1 }},\n  \"traceId\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.traceId }}\",\n  \"channel\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.channel }}\",\n  \"senderId\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.senderId }}\",\n  \"userRole\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.userRole }}\"\n}"
+      },
+      "id": "tool-query-db",
+      "name": "6a. Tool: queryCommerceDatabase",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "name": "manageInventoryReservation",
+        "description": "Check, reserve, or release 3-state stock with atomic locks.",
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-inventory-reserve.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"{{ $fromAI('action', 'check or reserve or release') }}\",\n  \"productId\": {{ $fromAI('productId', 'product id', 'number') || 1 }},\n  \"quantity\": {{ $fromAI('quantity', 'quantity', 'number') || 1 }}\n}"
+      },
+      "id": "tool-inventory-reserve",
+      "name": "6b. Tool: manageInventoryReservation",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "name": "verifyCustomerIdentity",
+        "description": "Generate OTP challenge or verify authorization token before sensitive operations.",
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-identity-verify.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"{{ $fromAI('action', 'request_otp or verify_otp') }}\",\n  \"identifier\": \"{{ $fromAI('identifier', 'phone or email') }}\",\n  \"otpCode\": \"{{ $fromAI('otpCode', '6-digit OTP code') }}\"\n}"
+      },
+      "id": "tool-identity-verify",
+      "name": "6c. Tool: verifyCustomerIdentity",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "name": "processOrderException",
+        "description": "Execute order cancellations, returns, and refund requests with authorization guardrails.",
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-order-exceptions.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"{{ $fromAI('action', 'cancel_order or request_refund') }}\",\n  \"orderId\": {{ $fromAI('orderId', 'order id', 'number') || 1 }},\n  \"authToken\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.authToken }}\",\n  \"channel\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.channel }}\"\n}"
+      },
+      "id": "tool-order-exceptions",
+      "name": "6d. Tool: processOrderException",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'SALES_AGENT', status: 'ACTIVE', capabilities: ['Product Discovery', 'Comparison', 'Offers'] } }];"
+      },
+      "id": "agent-sales",
+      "name": "Agent 1: Sales",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'SUPPORT_AGENT', status: 'ACTIVE', capabilities: ['FAQs', 'Returns', 'Warranties'] } }];"
+      },
+      "id": "agent-support",
+      "name": "Agent 2: Customer Support",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        130
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'PRODUCT_EXPERT_AGENT', status: 'ACTIVE', capabilities: ['Fiche Technique', 'Hardware Specs', '3D Models'] } }];"
+      },
+      "id": "agent-product",
+      "name": "Agent 3: Product Expert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'RECOMMENDER_AGENT', status: 'ACTIVE', capabilities: ['Personalized Recs', 'Semantic Similarity'] } }];"
+      },
+      "id": "agent-rec",
+      "name": "Agent 4: Recommendations",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        270
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'ORDER_MANAGEMENT_AGENT', status: 'ACTIVE', capabilities: ['Live Tracking', 'Order Rules', 'Carrier Updates'] } }];"
+      },
+      "id": "agent-order",
+      "name": "Agent 5: Order Management",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'INVENTORY_AGENT', status: 'ACTIVE', capabilities: ['3-State Stock Monitoring', 'Hub-A1 Status'] } }];"
+      },
+      "id": "agent-inv",
+      "name": "Agent 6: Inventory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        410
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'PRICING_PROMOTION_AGENT', status: 'ACTIVE', capabilities: ['Discounts', 'Coupon ZEYTECH10VIP'] } }];"
+      },
+      "id": "agent-price",
+      "name": "Agent 7: Pricing & Promo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'MARKETING_AGENT', status: 'ACTIVE', capabilities: ['Campaigns', 'Customer Segmentation'] } }];"
+      },
+      "id": "agent-market",
+      "name": "Agent 8: Marketing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'ANALYTICS_AGENT', status: 'ACTIVE', capabilities: ['Revenue Analytics', 'AOV', 'Conversion'] } }];"
+      },
+      "id": "agent-analytics",
+      "name": "Agent 9: Analytics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        130
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'FORECASTING_AGENT', status: 'ACTIVE', capabilities: ['Demand Forecasting', '7-Day Stockout'] } }];"
+      },
+      "id": "agent-forecast",
+      "name": "Agent 10: Forecasting",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'FRAUD_DETECTION_AGENT', status: 'ACTIVE', capabilities: ['Risk Scoring (0-100)', 'Anomalies'] } }];"
+      },
+      "id": "agent-fraud",
+      "name": "Agent 11: Fraud Detection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        270
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'CRM_AGENT', status: 'ACTIVE', capabilities: ['Customer 360', 'Retention Analysis'] } }];"
+      },
+      "id": "agent-crm",
+      "name": "Agent 12: CRM & Retention",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'CONTENT_GENERATION_AGENT', status: 'ACTIVE', capabilities: ['SEO Descriptions', 'Darija NLP'] } }];"
+      },
+      "id": "agent-content",
+      "name": "Agent 13: Content Generation",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        410
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { agent: 'ADMIN_COPILOT', status: 'ACTIVE', capabilities: ['Executive Assistant', 'Operational BI'] } }];"
+      },
+      "id": "agent-admin-copilot",
+      "name": "Agent 14: Admin Copilot",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Supervisor Output Evaluator & HITL Decision Gate (Gap 2 & Gap 28)\nconst resp = $input.first().json;\nconst confidence = parseFloat(resp.confidenceScore || 0.95);\nconst amountMAD = parseFloat(resp.actionAmountMAD || 0);\n\nconst isApprovalRequired = (amountMAD >= 5000);\nconst isLowConfidence = (confidence < 0.70);\n\nreturn [{\n  json: {\n    reply: resp.reply || resp.output || 'I have processed your request.',\n    confidence: confidence,\n    isLowConfidence: isLowConfidence,\n    isApprovalRequired: isApprovalRequired,\n    status: isApprovalRequired ? 'PENDING_APPROVAL' : (isLowConfidence ? 'ESCALATED_HITL' : 'SUCCESS')\n  }\n}];"
+      },
+      "id": "eval-supervisor-output",
+      "name": "7. Supervisor Output Evaluator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate HITL Support Queue Handoff (Gap 2)\nreturn [{\n  json: {\n    ticketType: 'SUPPORT_HANDOFF',\n    ticketId: `TCK-${Date.now().toString().slice(-6)}`,\n    message: 'Je transfère votre demande à notre équipe client ZeyTech pour un traitement prioritaire.',\n    status: 'ESCALATED_TO_HUMAN'\n  }\n}];"
+      },
+      "id": "hitl-support-handoff",
+      "name": "7a. HITL Support Escalation Queue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2280,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate Manager Telegram Authorization Request (Gap 28)\nreturn [{\n  json: {\n    ticketType: 'MANAGER_APPROVAL_GATE',\n    telegramAlert: '⚠️ *HIGH-VALUE ACTION APPROVAL REQUIRED (> 5,000 MAD)*\\nReply /approve or /reject to authorize.',\n    status: 'PENDING_MANAGER_APPROVAL'\n  }\n}];"
+      },
+      "id": "manager-approval-gate",
+      "name": "7b. Manager Approval Gate (> 5000 MAD)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2280,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-audit-log.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"traceId\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.traceId }}\",\n  \"actor\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.userRole }}\",\n  \"channel\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.channel }}\",\n  \"senderId\": \"{{ $('2. Unified Inbound Envelope & Guardrails').first().json.senderId }}\",\n  \"decision\": \"{{ $json.status }}\",\n  \"confidence\": {{ $json.confidence }},\n  \"reply\": \"{{ $json.reply }}\",\n  \"timestamp\": \"{{ $now.toISO() }}\"\n}"
+      },
+      "id": "audit-log-writer",
+      "name": "7c. Audit Log Writer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2280,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Central Event Processor & Deduplication Fan-Out (Gap 26 & Gap 8)\nconst payload = $input.first().json.body || $input.first().json;\nconst isCron = !!payload.field;\nconst eventType = isCron ? 'DAILY_CRON_REPORT' : (payload.eventType || payload.event || 'SALE_COMPLETED');\n\n// Stable idempotency key: prefer an event ID the source system already sent (Gap 8),\n// fall back to a generated one only for cron (which has no natural external ID)\nconst eventId = payload.eventId || (isCron ? `cron_${new Date().toISOString().slice(0,13)}` : `evt_${Date.now()}`);\n\nreturn [{\n  json: {\n    eventId: eventId,\n    eventType: eventType,\n    payload: payload,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "central-event-router",
+      "name": "8. Central Event Processor & Deduplication Router",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-idempotency-check.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"eventId\": \"{{ $json.eventId }}\",\n  \"eventType\": \"{{ $json.eventType }}\"\n}"
+      },
+      "id": "idempotency-check",
+      "name": "8a. Idempotency Check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.alreadyProcessed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "idempotency-gate",
+      "name": "8b. Idempotency Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        840,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Duplicate event — already processed, discard without re-triggering notifications (Gap 8)\nconst evt = $('8. Central Event Processor & Deduplication Router').first().json;\nreturn [{\n  json: {\n    eventId: evt.eventId,\n    eventType: evt.eventType,\n    status: 'DUPLICATE_DISCARDED'\n  }\n}];"
+      },
+      "id": "duplicate-event-discarded",
+      "name": "8c. Duplicate Event Discarded",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-chat.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"give me the full revenue, orders, and KPI summary\",\n  \"channel\": \"SYSTEM_EVENT_ROUTER\"\n}"
+      },
+      "id": "fetch-event-kpis",
+      "name": "10. Fetch Live Business Metrics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 15: Dedicated Notification Agent & Multi-Lingual Formatter (Gap 25, 37, 7)\nconst evt = $('8. Central Event Processor & Deduplication Router').first().json;\nconst kpi = $input.first().json;\nconst lang = evt.payload.language || 'DARIJA';\n\nlet alertTitle = '🎉 *NEW ZEYTECH SALE COMPLETED!* 🚀';\nlet alertBody = kpi.reply || 'ZeyTech operations nominal.';\n\nif (lang === 'DARIJA') {\n  alertTitle = '🎉 *تم تسجيل طلب جديد بنجاح في ZeyTech!* 🚀';\n}\n\nreturn [{\n  json: {\n    agent: 'NOTIFICATION_AGENT',\n    title: alertTitle,\n    body: alertBody,\n    channels: ['TELEGRAM_BOT', 'WHATSAPP_BUSINESS', 'IN_APP_DASHBOARD'],\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "agent-notification",
+      "name": "Agent 15: Dedicated Notification Agent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Dispatch to Telegram Bot Gateway (Gap 25)\nconst notif = $('Agent 15: Dedicated Notification Agent').first().json;\nreturn [{\n  json: {\n    channel: 'TELEGRAM_BOT',\n    telegramText: `${notif.title}\\n\\n${notif.body}`,\n    status: 'DISPATCHED_TO_TELEGRAM'\n  }\n}];"
+      },
+      "id": "dispatch-telegram-gateway",
+      "name": "9a. Omnichannel Telegram Dispatcher",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Dispatch to WhatsApp Business Gateway (Gap 14 & Gap 25)\nconst notif = $('Agent 15: Dedicated Notification Agent').first().json;\nreturn [{\n  json: {\n    channel: 'WHATSAPP_BUSINESS',\n    whatsappTemplate: `${notif.title}\\n\\n${notif.body}`,\n    status: 'DISPATCHED_TO_WHATSAPP'\n  }\n}];"
+      },
+      "id": "dispatch-whatsapp-gateway",
+      "name": "9b. Omnichannel WhatsApp Dispatcher",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Platform Error Context Extractor & Severity Classifier (Gap 1 & Gap 30)\nconst err = $input.first().json;\nconst traceId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;\nconst nodeName = err.node?.name || 'PLATFORM_NODE';\nconst isCritical = nodeName.includes('Payment') || nodeName.includes('Inventory');\n\nreturn [{\n  json: {\n    traceId: traceId,\n    nodeName: nodeName,\n    severity: isCritical ? 'CRITICAL' : 'ERROR',\n    errorMessage: err.error?.message || 'Execution error',\n    errorStack: err.error?.stack || null,\n    shouldAlertAdmin: isCritical,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "extract-error-context",
+      "name": "11a. Platform Error Extractor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-chat.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"LOG_PLATFORM_ERROR\",\n  \"traceId\": \"{{ $json.traceId }}\",\n  \"nodeName\": \"{{ $json.nodeName }}\",\n  \"severity\": \"{{ $json.severity }}\",\n  \"errorMessage\": \"{{ $json.errorMessage }}\"\n}"
+      },
+      "id": "write-db-error-log",
+      "name": "11b. Write to Platform Error Logs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Low-Noise Admin Telegram Alert (Gap 1)\nconst err = $('11a. Platform Error Extractor').first().json;\nreturn [{\n  json: {\n    alertType: 'CRITICAL_PLATFORM_ERROR',\n    text: \"🚨 *ZEYTECH CRITICAL ALERT*\\n• Node: *\" + err.nodeName + \"*\\n• Severity: \" + err.severity + \"\\n• Error: \" + err.errorMessage + \"\\n• Trace ID: \" + err.traceId,\n    status: 'ALERT_DISPATCHED'\n  }\n}];"
+      },
+      "id": "dispatch-admin-alert",
+      "name": "11c. Dispatch Critical Admin Alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8085/api-payment-verify.php",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body || $json }}"
+      },
+      "id": "verify-payment-webhook-node",
+      "name": "1h. Verify Payment Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        360,
+        1300
+      ]
+    }
+  ],
+  "connections": {
+    "1a. AI Entry Gateway (Web)": {
+      "main": [
+        [
+          {
+            "node": "2. Unified Inbound Envelope & Guardrails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1b. Interactive Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "2. Unified Inbound Envelope & Guardrails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1c. Telegram / WhatsApp Inbound Webhook": {
+      "main": [
+        [
+          {
+            "node": "2. Unified Inbound Envelope & Guardrails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Unified Inbound Envelope & Guardrails": {
+      "main": [
+        [
+          {
+            "node": "2a. Rate Limit Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2a. Rate Limit Check": {
+      "main": [
+        [
+          {
+            "node": "2b. Rate Limit Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2b. Rate Limit Gate": {
+      "main": [
+        [
+          {
+            "node": "2d. LLM Budget Guard Check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "2c. Rate Limited Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2d. LLM Budget Guard Check": {
+      "main": [
+        [
+          {
+            "node": "2e. Budget Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2e. Budget Gate": {
+      "main": [
+        [
+          {
+            "node": "3. AI SUPERVISOR / ROUTER",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "2f. Budget Exceeded — Human Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4. Ollama Local LLM / Cloud Engine": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "3. AI SUPERVISOR / ROUTER",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5. Short & Long Context Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "3. AI SUPERVISOR / ROUTER",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6a. Tool: queryCommerceDatabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "3. AI SUPERVISOR / ROUTER",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6b. Tool: manageInventoryReservation": {
+      "ai_tool": [
+        [
+          {
+            "node": "3. AI SUPERVISOR / ROUTER",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6c. Tool: verifyCustomerIdentity": {
+      "ai_tool": [
+        [
+          {
+            "node": "3. AI SUPERVISOR / ROUTER",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6d. Tool: processOrderException": {
+      "ai_tool": [
+        [
+          {
+            "node": "3. AI SUPERVISOR / ROUTER",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. AI SUPERVISOR / ROUTER": {
+      "main": [
+        [
+          {
+            "node": "Agent 1: Sales",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 2: Customer Support",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 3: Product Expert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 4: Recommendations",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 5: Order Management",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 6: Inventory",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 7: Pricing & Promo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 8: Marketing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 9: Analytics",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 10: Forecasting",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 11: Fraud Detection",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 12: CRM & Retention",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 13: Content Generation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 14: Admin Copilot",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "7. Supervisor Output Evaluator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7. Supervisor Output Evaluator": {
+      "main": [
+        [
+          {
+            "node": "7a. HITL Support Escalation Queue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "7b. Manager Approval Gate (> 5000 MAD)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "7c. Audit Log Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1d. Business Events Webhook Ingest": {
+      "main": [
+        [
+          {
+            "node": "8. Central Event Processor & Deduplication Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1e. 24h Autonomous Daily Report Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "8. Central Event Processor & Deduplication Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8. Central Event Processor & Deduplication Router": {
+      "main": [
+        [
+          {
+            "node": "8a. Idempotency Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8a. Idempotency Check": {
+      "main": [
+        [
+          {
+            "node": "8b. Idempotency Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8b. Idempotency Gate": {
+      "main": [
+        [
+          {
+            "node": "10. Fetch Live Business Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "8c. Duplicate Event Discarded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10. Fetch Live Business Metrics": {
+      "main": [
+        [
+          {
+            "node": "Agent 15: Dedicated Notification Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 15: Dedicated Notification Agent": {
+      "main": [
+        [
+          {
+            "node": "9a. Omnichannel Telegram Dispatcher",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "9b. Omnichannel WhatsApp Dispatcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1f. Global Platform Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "11a. Platform Error Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11a. Platform Error Extractor": {
+      "main": [
+        [
+          {
+            "node": "11b. Write to Platform Error Logs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "11c. Dispatch Critical Admin Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1g. Payment Provider Webhook": {
+      "main": [
+        [
+          {
+            "node": "1h. Verify Payment Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

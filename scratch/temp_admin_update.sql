@@ -1,0 +1,1 @@
+UPDATE admin SET password = '$2y$12$K1r6G9rJ7D3k0l8Q4w2e5e8G9rJ7D3k0l8Q4w2e5e8G9rJ7D3k0l8' WHERE username = 'admin';

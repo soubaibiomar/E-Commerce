@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeyTech Operations — Merchant Control Center</title>
+    <!-- Authentic ZeyTech Typography (Fraunces, IBM Plex Sans, Space Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <style>
+        :root {
+            --bg-page: #080e1a;
+            --bg-surface: #0c1526;
+            --bg-surface-elevated: #111d33;
+            --bg-subtle: #16243d;
+            --border-color: rgba(142, 162, 191, 0.18);
+            --border-subtle: rgba(142, 162, 191, 0.10);
+            --border-accent: rgba(199, 154, 68, 0.40);
+            
+            --text-main: #f2efe6;
+            --text-secondary: #8ea2bf;
+            --text-muted: #5e7391;
+            
+            --brand-primary: #c79a44;
+            --brand-primary-hover: #d9b567;
+            --accent-gold-gradient: linear-gradient(135deg, #c79a44 0%, #d9b567 100%);
+            
+            --status-success: #22c55e;
+            --status-warning: #eab308;
+            --status-danger: #ef4444;
+            --status-info: #8ea2bf;
+
+            --font-headline: 'Fraunces', Georgia, serif;
+            --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'Space Mono', monospace;
+
+            --radius-sharp: 2px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-headline, .metric-value {
+            font-family: var(--font-headline);
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .hexagram-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            color: #c79a44;
+            flex-shrink: 0;
+        }
+
+        .hexagram-svg {
+            width: 100%;
+            height: 100%;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        /* Top Enterprise Navigation */
+        .top-nav {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            font-family: var(--font-headline);
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .env-badge {
+            background: rgba(199, 154, 68, 0.12);
+            color: #d9b567;
+            font-size: 10px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--radius-sharp);
+            border: 1px solid var(--border-accent);
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .user-cluster {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .role-pill {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--radius-sharp);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .role-admin { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .role-manager { background: rgba(199, 154, 68, 0.15); color: #d9b567; border: 1px solid rgba(199, 154, 68, 0.4); }
+        .role-support { background: rgba(142, 162, 191, 0.15); color: #8ea2bf; border: 1px solid rgba(142, 162, 191, 0.3); }
+
+        /* Main Workspace Container */
+        .workspace-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 24px 60px 24px;
+        }
+
+        /* Stat Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sharp);
+            padding: 18px 20px;
+            transition: border-color 0.2s ease;
+        }
+
+        .metric-card:hover {
+            border-color: var(--border-accent);
+        }
+
+        .metric-title {
+            font-size: 11px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .metric-value {
+            font-family: var(--font-headline) !important;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .metric-subtext {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Tabs & Section Header */
+        .section-header {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sharp);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .nav-tabs-custom {
+            display: flex;
+            gap: 4px;
+            border: none;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: var(--radius-sharp);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            transition: all 0.15s ease;
+        }
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: var(--bg-subtle);
+            border-color: var(--border-color);
+        }
+        .tab-btn.active {
+            color: #d9b567;
+            background: rgba(199, 154, 68, 0.12);
+            border-color: var(--border-accent);
+            font-weight: 700;
+        }
+
+        .tab-count-badge {
+            background: var(--bg-page);
+            border: 1px solid var(--border-color);
+            font-size: 11px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: var(--radius-sharp);
+            margin-left: 6px;
+            color: var(--text-secondary);
+        }
+
+        /* Queue Lists & Tables */
+        .card-panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sharp);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .table-responsive {
+            margin: 0;
+        }
+
+        .enterprise-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-main);
+        }
+
+        .enterprise-table th {
+            background: var(--bg-surface-elevated);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .enterprise-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .enterprise-table tr:hover {
+            background: rgba(199, 154, 68, 0.03);
+        }
+
+        .tag-pill {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            padding: 2px 6px;
+            border-radius: var(--radius-sharp);
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline-action {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: var(--radius-sharp);
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+        .btn-outline-action:hover {
+            background: rgba(199, 154, 68, 0.1);
+            color: #d9b567;
+            border-color: var(--border-accent);
+        }
+
+        .btn-approve-primary {
+            background: var(--accent-gold-gradient);
+            color: var(--bg-page);
+            border: 1px solid #d9b567;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: var(--radius-sharp);
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: opacity 0.18s ease;
+        }
+        .btn-approve-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-reject-danger {
+            background: transparent;
+            color: #f87171;
+            border: 1px solid var(--status-danger);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: var(--radius-sharp);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.18s ease;
+        }
+        .btn-reject-danger:hover {
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(8, 14, 26, 0.88);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-dialog {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sharp);
+            width: 400px;
+            max-width: 90vw;
+            padding: 28px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .chat-dialog {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sharp);
+            width: 650px;
+            max-width: 95vw;
+            height: 700px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-page);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: var(--radius-sharp);
+            font-family: var(--font-body);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #c79a44;
+        }
+
+        .loading-ring {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            border-top-color: #d9b567;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Responsive Media Queries (375px, 768px, 1024px) */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 12px 16px;
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            .user-cluster {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .workspace-container {
+                padding: 16px 12px 40px 12px;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .grid-2-col {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            .chat-dialog {
+                width: 100vw !important;
+                max-width: 100vw !important;
+                height: 100vh !important;
+                max-height: 100vh !important;
+                border-radius: 0 !important;
+            }
+            .btn-outline-action, .btn-approve-primary, .btn-reject-danger {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .form-input {
+                min-height: 44px;
+                font-size: 14px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid-2-col {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Staff Login Dialog -->
+<div id="authModal" class="modal-overlay" style="display:none;">
+    <div class="login-dialog">
+        <div style="margin-bottom: 20px;">
+            <div style="font-weight: 700; font-size: 18px; color: var(--text-main);">Merchant Operations Sign-In</div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">ZeyTech Commercial Platform Staff Access</div>
+        </div>
+
+        <div id="loginError" class="alert alert-danger" style="display:none; font-size: 12px; padding: 8px 12px; background: rgba(239,68,68,0.15); border: 1px solid #ef4444; color: #fca5a5;"></div>
+
+        <form onsubmit="handleLoginSubmit(event)">
+            <div style="margin-bottom: 14px;">
+                <label style="font-size: 12px; font-weight: 500; color: var(--text-secondary);">Work Email</label>
+                <input type="email" id="loginEmail" class="form-input" placeholder="admin@zeytech.com" required>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <label style="font-size: 12px; font-weight: 500; color: var(--text-secondary);">Password</label>
+                <input type="password" id="loginPassword" class="form-input" placeholder="••••••••••••" required>
+            </div>
+
+            <!-- Role Presets for Testing -->
+            <div style="margin-bottom: 16px; background: var(--bg-page); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">QUICK ROLE PRESETS:</div>
+                <div style="display: flex; gap: 6px;">
+                    <button type="button" class="btn-outline-action" style="font-size: 11px; padding: 3px 8px;" onclick="fillPreset('admin@zeytech.com', 'AdminPassword2026!')">Admin</button>
+                    <button type="button" class="btn-outline-action" style="font-size: 11px; padding: 3px 8px;" onclick="fillPreset('manager@zeytech.com', 'ManagerPassword2026!')">Manager</button>
+                    <button type="button" class="btn-outline-action" style="font-size: 11px; padding: 3px 8px;" onclick="fillPreset('support@zeytech.com', 'SupportPassword2026!')">Support</button>
+                </div>
+            </div>
+
+            <button type="submit" id="loginSubmitBtn" class="btn-approve-primary" style="width: 100%; padding: 8px; font-size: 13px; text-align: center; justify-content: center; display: flex; align-items: center; gap: 8px;">
+                Sign In to Console
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Live Customer Chat Drawer / Modal -->
+<div id="chatDrawerModal" class="modal-overlay" style="display:none;">
+    <div class="chat-dialog">
+        <!-- Header -->
+        <div style="padding:16px 20px; background:#141c2e; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:16px; font-weight:700; color:var(--text-main);" id="chatCustomerTitle">Chat with Customer</span>
+                    <span id="chatChannelBadge" class="tag-pill">WEB</span>
+                </div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;" id="chatTicketSubtitle">Ticket #1 • Casablanca Fulfillment</div>
+            </div>
+            <button onclick="closeChatDrawer()" style="background:transparent; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer;">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Quick Response Snippets -->
+        <div style="padding:8px 16px; background:var(--bg-page); border-bottom:1px solid var(--border-color); display:flex; gap:6px; overflow-x:auto;">
+            <button class="btn-outline-action" style="font-size:11px; padding:3px 8px; white-space:nowrap;" onclick="fillChatSnippet('Salam! M3ak support dyal ZeyTech, kifach nqder n3awnek?')">🇲🇦 Marhaba (Darija)</button>
+            <button class="btn-outline-action" style="font-size:11px; padding:3px 8px; white-space:nowrap;" onclick="fillChatSnippet('Commande dyalk rah f triq m3a livreur, voici les détails...')">🚚 Shipping Tracking</button>
+            <button class="btn-outline-action" style="font-size:11px; padding:3px 8px; white-space:nowrap;" onclick="fillChatSnippet('Votre remboursement a été validé et sera crédité sous 24-48h.')">💳 Refund Confirmation</button>
+        </div>
+
+        <!-- Message Thread -->
+        <div id="chatThreadContainer" style="flex:1; padding:20px; overflow-y:auto; background:var(--bg-page); display:flex; flex-direction:column; gap:12px;">
+            <div style="text-align:center; padding:40px;"><div class="loading-ring"></div></div>
+        </div>
+
+        <!-- Reply Input -->
+        <form onsubmit="handleSendStaffMessage(event)" style="padding:14px 20px; background:var(--bg-surface); border-top:1px solid var(--border-color); display:flex; gap:10px;">
+            <input type="text" id="staffChatInput" class="form-input" placeholder="Type a response to the customer (Darija, French, English)..." style="margin:0; flex:1;" required autocomplete="off">
+            <button type="submit" id="staffSendBtn" class="btn-approve-primary" style="display:flex; align-items:center; gap:6px; padding:8px 16px;">
+                <i class="fa fa-paper-plane"></i> Send Reply
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Main Top Navigation -->
+<header class="top-nav">
+    <div class="brand-cluster">
+        <div class="brand-logo">
+            <i class="fa fa-cubes" style="color: #3b82f6;"></i>
+            <span>ZeyTech Operations</span>
+        </div>
+        <span class="env-badge">Casablanca Hub-A1</span>
+        <span id="liveStreamBadge" class="env-badge" style="background:#064e3b; color:#6ee7b7; border-color:#059669; display:none;">
+            <i class="fa fa-circle" style="font-size:8px; margin-right:4px; color:#10b981;"></i> LIVE SSE STREAM
+        </span>
+    </div>
+    
+    <div class="user-cluster">
+        <span id="userRoleBadge" class="role-pill role-manager">Manager</span>
+        <span id="userNameText" style="font-weight: 500; font-size: 13px;">Omar El Fassi</span>
+        <button class="btn-outline-action" style="font-size: 12px; padding: 4px 10px;" onclick="handleLogout()">
+            <i class="fa fa-sign-out"></i> Log Out
+        </button>
+    </div>
+</header>
+
+<main class="workspace-container">
+    <!-- Key Metric Overview -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-title">Pending Manager Authorizations</div>
+            <div id="statPendingApprovals" class="metric-value" style="color: var(--status-warning);">0</div>
+            <div class="metric-subtext">Requires role Manager or Admin (> 5,000 MAD)</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-title">Active Support Escalations</div>
+            <div id="statOpenEscalations" class="metric-value" style="color: var(--status-info);">0</div>
+            <div class="metric-subtext">Low-confidence customer turns (< 0.70)</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-title">Gross Platform Settlement</div>
+            <div id="statGrossRevenue" class="metric-value">$404,700.00</div>
+            <div class="metric-subtext">≈ 4,127,940.00 MAD (100% Verified)</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-title">Daily AI Usage Spend</div>
+            <div id="statDailySpend" class="metric-value">$0.00</div>
+            <div class="metric-subtext">Daily limit cap: $25.00 USD</div>
+        </div>
+    </div>
+
+    <!-- Tabbed Queue Navigation -->
+    <div class="section-header">
+        <div class="nav-tabs-custom">
+            <button class="tab-btn active" onclick="switchTab('approvals')" id="tabApprovalsBtn">
+                Manager Approval Gate <span id="badgeApprovalsCount" class="tab-count-badge">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('escalations')" id="tabEscalationsBtn">
+                Customer Support Escalations <span id="badgeEscalationsCount" class="tab-count-badge">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('audit')" id="tabAuditBtn">
+                Decision Audit Trail
+            </button>
+        </div>
+
+        <div>
+            <button class="btn-outline-action" onclick="fetchQueues()">
+                <i class="fa fa-refresh"></i> Refresh Queues
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Alert Box -->
+    <div id="opsErrorAlert" class="alert alert-danger" style="display:none; font-size: 13px; background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #fca5a5; margin-bottom: 16px; border-radius: 6px;"></div>
+
+    <!-- 1. APPROVALS TAB CONTENT -->
+    <div id="tabContentApprovals" class="card-panel">
+        <div class="table-responsive">
+            <table class="enterprise-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Customer</th>
+                        <th>Channel</th>
+                        <th>Amount (MAD)</th>
+                        <th>Reason & Risk Indicators</th>
+                        <th>Flags</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="approvalsTableBody">
+                    <tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);"><div class="loading-ring"></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. ESCALATIONS TAB CONTENT -->
+    <div id="tabContentEscalations" class="card-panel" style="display: none;">
+        <div class="table-responsive">
+            <table class="enterprise-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Customer</th>
+                        <th>Channel</th>
+                        <th>Confidence</th>
+                        <th>Customer Inquiry</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Action & Live Chat</th>
+                    </tr>
+                </thead>
+                <tbody id="escalationsTableBody">
+                    <tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);"><div class="loading-ring"></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. AUDIT TAB CONTENT -->
+    <div id="tabContentAudit" class="card-panel" style="display: none;">
+        <div class="table-responsive">
+            <table class="enterprise-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Trace ID</th>
+                        <th>Actor</th>
+                        <th>Decision / Event</th>
+                        <th>Audit Details</th>
+                    </tr>
+                </thead>
+                <tbody id="auditTableBody">
+                    <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);"><div class="loading-ring"></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script>
+// Authentication State
+var staffToken = localStorage.getItem('zeytech_staff_token') || '';
+var currentStaffUser = JSON.parse(localStorage.getItem('zeytech_staff_user') || 'null');
+var activeTab = 'approvals';
+var eventSource = null;
+var activeChatTicketId = 0;
+var activeChatChannel = 'WEB';
+
+function fillPreset(email, pwd) {
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').value = pwd;
+}
+
+function checkAuthSession() {
+    if (!staffToken || !currentStaffUser) {
+        document.getElementById('authModal').style.display = 'flex';
+        if (eventSource) { eventSource.close(); eventSource = null; }
+    } else {
+        document.getElementById('authModal').style.display = 'none';
+        document.getElementById('userNameText').textContent = currentStaffUser.name;
+        var badge = document.getElementById('userRoleBadge');
+        badge.textContent = currentStaffUser.role;
+        badge.className = 'role-pill role-' + currentStaffUser.role;
+        fetchQueues();
+        initSSE();
+    }
+}
+
+function initSSE() {
+    if (eventSource) {
+        eventSource.close();
+    }
+    if (!staffToken) return;
+
+    try {
+        eventSource = new EventSource('api-ops-events.php?token=' + encodeURIComponent(staffToken));
+        eventSource.addEventListener('connected', function(e) {
+            var badge = document.getElementById('liveStreamBadge');
+            if (badge) badge.style.display = 'inline-flex';
+        });
+        eventSource.addEventListener('queue_update', function(e) {
+            fetchQueues();
+            if (activeChatTicketId > 0) {
+                loadChatHistory(activeChatTicketId);
+            }
+        });
+        eventSource.onerror = function() {
+            var badge = document.getElementById('liveStreamBadge');
+            if (badge) badge.style.display = 'none';
+        };
+    } catch (err) {
+        console.warn('SSE stream error:', err);
+    }
+}
+
+function handleLoginSubmit(e) {
+    e.preventDefault();
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value;
+    var btn = document.getElementById('loginSubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="loading-ring"></div> Authenticating...';
+
+    fetch('api-auth-login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: password })
+    })
+    .then(res => res.json().then(data => ({ status: res.status, data: data })))
+    .then(result => {
+        btn.disabled = false;
+        btn.innerHTML = 'Sign In to Console';
+
+        if (result.data.success) {
+            staffToken = result.data.token;
+            currentStaffUser = result.data.user;
+            localStorage.setItem('zeytech_staff_token', staffToken);
+            localStorage.setItem('zeytech_staff_user', JSON.stringify(currentStaffUser));
+            checkAuthSession();
+        } else {
+            var errDiv = document.getElementById('loginError');
+            errDiv.style.display = 'block';
+            errDiv.textContent = result.data.message || 'Invalid credentials.';
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = 'Sign In to Console';
+        var errDiv = document.getElementById('loginError');
+        errDiv.style.display = 'block';
+        errDiv.textContent = 'Server connection error: ' + err.message;
+    });
+}
+
+function handleLogout() {
+    if (eventSource) { eventSource.close(); eventSource = null; }
+    fetch('api-auth-logout.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + staffToken
+        }
+    }).finally(() => {
+        staffToken = '';
+        currentStaffUser = null;
+        localStorage.removeItem('zeytech_staff_token');
+        localStorage.removeItem('zeytech_staff_user');
+        checkAuthSession();
+    });
+}
+
+function switchTab(tabName) {
+    activeTab = tabName;
+    document.getElementById('tabApprovalsBtn').classList.toggle('active', tabName === 'approvals');
+    document.getElementById('tabEscalationsBtn').classList.toggle('active', tabName === 'escalations');
+    document.getElementById('tabAuditBtn').classList.toggle('active', tabName === 'audit');
+
+    document.getElementById('tabContentApprovals').style.display = (tabName === 'approvals') ? 'block' : 'none';
+    document.getElementById('tabContentEscalations').style.display = (tabName === 'escalations') ? 'block' : 'none';
+    document.getElementById('tabContentAudit').style.display = (tabName === 'audit') ? 'block' : 'none';
+}
+
+function fetchQueues() {
+    fetch('api-ops-queues.php', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + staffToken
+        }
+    })
+    .then(res => {
+        if (res.status === 401) {
+            handleLogout();
+            throw new Error('Session expired. Please log in.');
+        }
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+    })
+    .then(data => {
+        document.getElementById('opsErrorAlert').style.display = 'none';
+
+        var approvals = data.approvals || [];
+        var escalations = data.escalations || [];
+        var audit = data.audit || [];
+
+        document.getElementById('statPendingApprovals').textContent = approvals.length;
+        document.getElementById('statOpenEscalations').textContent = escalations.filter(e => e.status === 'OPEN').length;
+        document.getElementById('badgeApprovalsCount').textContent = approvals.length;
+        document.getElementById('badgeEscalationsCount').textContent = escalations.length;
+
+        renderApprovalsTable(approvals);
+        renderEscalationsTable(escalations);
+        renderAuditTable(audit);
+    })
+    .catch(err => {
+        document.getElementById('opsErrorAlert').style.display = 'block';
+        document.getElementById('opsErrorAlert').textContent = 'Live telemetry error: ' + err.message;
+    });
+}
+
+function postAction(type, ticketId, action) {
+    var endpoint = (type === 'approval') ? 'api-approval-action.php' : 'api-escalation-action.php';
+
+    if (type === 'approval') {
+        var verb = (action === 'approve') ? 'AUTHORIZE and DISPATCH' : 'REJECT';
+        if (!confirm(`Are you sure you want to ${verb} Ticket #${ticketId}? This action will be logged in the immutable audit ledger.`)) {
+            return;
+        }
+    }
+
+    fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + staffToken
+        },
+        body: JSON.stringify({ ticketId: ticketId, action: action })
+    })
+    .then(res => res.json().then(data => ({ status: res.status, data: data })))
+    .then(result => {
+        if (result.data.success) {
+            fetchQueues();
+        } else {
+            alert('Action Rejected: ' + (result.data.message || result.data.error));
+        }
+    })
+    .catch(err => {
+        alert('Network Error executing action: ' + err.message);
+    });
+}
+
+// -----------------------------------------------------------------------------
+// LIVE CHAT DRAWER FUNCTIONS (Phase 10 Messaging)
+// -----------------------------------------------------------------------------
+
+function openChatDrawer(ticketId, customerName, channel) {
+    activeChatTicketId = ticketId;
+    activeChatChannel = channel || 'WEB';
+    
+    document.getElementById('chatCustomerTitle').textContent = 'Chat with ' + customerName;
+    document.getElementById('chatChannelBadge').textContent = activeChatChannel;
+    document.getElementById('chatTicketSubtitle').textContent = 'Ticket #' + ticketId + ' • Live Support Thread';
+    document.getElementById('chatDrawerModal').style.display = 'flex';
+    
+    loadChatHistory(ticketId);
+}
+
+function closeChatDrawer() {
+    document.getElementById('chatDrawerModal').style.display = 'none';
+    activeChatTicketId = 0;
+}
+
+function fillChatSnippet(text) {
+    document.getElementById('staffChatInput').value = text;
+    document.getElementById('staffChatInput').focus();
+}
+
+function loadChatHistory(ticketId) {
+    var container = document.getElementById('chatThreadContainer');
+    
+    fetch('api-chat-history.php?ticketId=' + ticketId)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success || !data.messages || data.messages.length === 0) {
+                container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:40px;">No message history recorded on this ticket yet.</div>';
+                return;
+            }
+
+            var html = '';
+            data.messages.forEach(m => {
+                var isStaff = (m.sender_type === 'STAFF');
+                var isCustomer = (m.sender_type === 'CUSTOMER');
+                
+                if (isCustomer) {
+                    html += `
+                        <div style="align-self:flex-start; max-width:75%; background:#1e293b; border:1px solid #334155; border-radius:10px 10px 10px 2px; padding:10px 14px;">
+                            <div style="font-size:11px; font-weight:700; color:#38bdf8; margin-bottom:2px;">
+                                <i class="fa fa-user"></i> ${m.sender_name} (${m.channel})
+                            </div>
+                            <div style="color:#f8fafc; font-size:13px;">${m.message}</div>
+                            <div style="font-size:10px; color:#64748b; margin-top:4px; text-align:right;">${m.created_at ? m.created_at.slice(11,16) : ''}</div>
+                        </div>
+                    `;
+                } else if (isStaff) {
+                    html += `
+                        <div style="align-self:flex-end; max-width:75%; background:#064e3b; border:1px solid #059669; border-radius:10px 10px 2px 10px; padding:10px 14px;">
+                            <div style="font-size:11px; font-weight:700; color:#6ee7b7; margin-bottom:2px;">
+                                <i class="fa fa-user-circle"></i> ${m.sender_name} (Staff)
+                            </div>
+                            <div style="color:#ffffff; font-size:13px;">${m.message}</div>
+                            <div style="font-size:10px; color:#a7f3d0; margin-top:4px; text-align:right;">${m.created_at ? m.created_at.slice(11,16) : ''}</div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div style="align-self:flex-start; max-width:75%; background:#111827; border:1px solid #1f2937; border-radius:10px; padding:8px 12px;">
+                            <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:2px;">
+                                <i class="fa fa-android"></i> ${m.sender_name}
+                            </div>
+                            <div style="color:#cbd5e1; font-size:12px;">${m.message}</div>
+                        </div>
+                    `;
+                }
+            });
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        })
+        .catch(err => {
+            container.innerHTML = '<div style="color:#f87171; text-align:center; padding:20px;">Could not load messages: ' + err.message + '</div>';
+        });
+}
+
+function handleSendStaffMessage(e) {
+    e.preventDefault();
+    var input = document.getElementById('staffChatInput');
+    var message = input.value.trim();
+    if (!message || activeChatTicketId <= 0) return;
+
+    var btn = document.getElementById('staffSendBtn');
+    btn.disabled = true;
+
+    fetch('api-chat-send.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + staffToken
+        },
+        body: JSON.stringify({
+            ticketId: activeChatTicketId,
+            message: message,
+            senderType: 'STAFF',
+            channel: activeChatChannel
+        })
+    })
+    .then(res => res.json())
+    .then(result => {
+        btn.disabled = false;
+        if (result.success) {
+            input.value = '';
+            loadChatHistory(activeChatTicketId);
+        } else {
+            alert('Could not send message: ' + (result.message || result.error));
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        alert('Network Error sending message: ' + err.message);
+    });
+}
+
+function renderApprovalsTable(approvals) {
+    var tbody = document.getElementById('approvalsTableBody');
+    if (approvals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">No pending manager approvals. All transactions nominal.</td></tr>';
+        return;
+    }
+
+    var html = '';
+    approvals.forEach(a => {
+        var flagsHtml = (a.flags || []).map(f => `<span class="tag-pill">${f}</span>`).join(' ');
+        html += `
+            <tr>
+                <td><span style="font-family:'JetBrains Mono'; font-size:12px; color:var(--brand-primary);">#${a.id}</span></td>
+                <td><strong>${a.customer}</strong></td>
+                <td><span class="tag-pill">${a.channel}</span></td>
+                <td><strong style="color:var(--status-warning); font-size:14px;">${Number(a.amountMAD).toLocaleString(undefined, {minimumFractionDigits:2})} MAD</strong></td>
+                <td style="max-width:320px; color:#e2e8f0;">${a.reason}</td>
+                <td>${flagsHtml}</td>
+                <td style="text-align: right; white-space: nowrap;">
+                    <button class="btn-reject-danger" onclick="postAction('approval', ${a.id}, 'reject')">Reject</button>
+                    <button class="btn-approve-primary" style="margin-left:6px;" onclick="postAction('approval', ${a.id}, 'approve')">Authorize</button>
+                </td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function renderEscalationsTable(escalations) {
+    var tbody = document.getElementById('escalationsTableBody');
+    if (escalations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">No open customer support escalations.</td></tr>';
+        return;
+    }
+
+    var html = '';
+    escalations.forEach(e => {
+        var isClaimed = (e.status === 'CLAIMED');
+        var statusBadge = isClaimed 
+            ? `<span class="tag-pill" style="background:#1e3a8a; color:#93c5fd; border-color:#2563eb;"><i class="fa fa-user"></i> Claimed: ${e.claimedBy || 'Staff'}</span>`
+            : `<span class="tag-pill" style="background:#064e3b; color:#6ee7b7; border-color:#059669;">Open</span>`;
+        
+        var claimBtn = isClaimed
+            ? ''
+            : `<button class="btn-outline-action" onclick="postAction('escalation', ${e.id}, 'claim')"><i class="fa fa-hand-paper-o"></i> Claim</button>`;
+
+        var chatBtn = `<button class="btn-approve-primary" style="margin-left:6px;" onclick="openChatDrawer(${e.id}, '${e.customer}', '${e.channel}')"><i class="fa fa-comments"></i> Live Chat</button>`;
+
+        html += `
+            <tr>
+                <td><span style="font-family:'JetBrains Mono'; font-size:12px; color:var(--brand-primary);">#${e.id}</span></td>
+                <td><strong>${e.customer}</strong></td>
+                <td><span class="tag-pill">${e.channel}</span></td>
+                <td><span style="font-weight:600; color:${e.confidence < 0.65 ? '#f87171' : '#fde047'};">${Math.round(e.confidence * 100)}%</span></td>
+                <td style="max-width:340px; color:#e2e8f0;">${e.message}</td>
+                <td>${statusBadge}</td>
+                <td style="text-align: right; white-space: nowrap;">
+                    ${claimBtn}
+                    ${chatBtn}
+                </td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function renderAuditTable(audit) {
+    var tbody = document.getElementById('auditTableBody');
+    if (audit.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--text-muted);">No audit log entries recorded.</td></tr>';
+        return;
+    }
+
+    var html = '';
+    audit.forEach(a => {
+        html += `
+            <tr>
+                <td style="font-family:'JetBrains Mono'; font-size:12px; color:var(--text-secondary);">${a.createdAt || ''}</td>
+                <td><span style="font-family:'JetBrains Mono'; font-size:11px; color:#94a3b8;">${a.traceId}</span></td>
+                <td><span class="tag-pill">${a.actor}</span></td>
+                <td><strong style="color:#38bdf8;">${a.decision}</strong></td>
+                <td style="color:#cbd5e1; max-width:400px; font-size:12px;">${a.reply || '-'}</td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+// Initial session check
+checkAuthSession();
+</script>
+
+</body>
+</html>

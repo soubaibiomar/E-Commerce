@@ -1,0 +1,134 @@
+services:
+  # 1. Classic PHP 8.2 & Apache Storefront
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopping_web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8085}:80"
+    environment:
+      DB_HOST: ${DB_HOST:-db}
+      DB_USER: ${DB_USERNAME:-shopping_user}
+      DB_PASS: ${DB_PASSWORD:-shopping_pass}
+      DB_NAME: ${DB_DATABASE:-shopping}
+      DB_PORT: 3306
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - shopping_network
+
+  # 2. MariaDB Database (MySQL Compatible)
+  db:
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+    container_name: shopping_db
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-3308}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password_123}
+      MYSQL_DATABASE: ${DB_DATABASE:-shopping}
+      MYSQL_USER: ${DB_USERNAME:-shopping_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-shopping_pass}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent || mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - shopping_network
+
+  # 3. phpMyAdmin Database GUI
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: shopping_pma
+    restart: unless-stopped
+    ports:
+      - "${PMA_PORT:-8086}:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${DB_ROOT_PASSWORD:-root_password_123}
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - shopping_network
+
+  # 4. Redis Cache & BullMQ Event Queue
+  redis:
+    image: redis:7-alpine
+    container_name: loop_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - shopping_network
+
+  # 5. Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:v1.11.3
+    container_name: loop_qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - shopping_network
+
+  # 6. Next.js 14 App Router + 3D Studio + Multi-Agent AI
+  loop_app:
+    build:
+      context: ./loop-app
+      dockerfile: Dockerfile
+    container_name: loop_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "mysql://shopping_user:shopping_pass@db:3306/shopping"
+      REDIS_URL: "redis://redis:6379"
+      QDRANT_URL: "http://qdrant:6333"
+      OLLAMA_BASE_URL: "http://host.docker.internal:11434"
+      OLLAMA_MODEL: "llama3.2:1b"
+      N8N_CHAT_WEBHOOK_URL: "http://host.docker.internal:5678/webhook/loop-engineering-ai"
+      N8N_SPEC_GENERATOR_WEBHOOK_URL: "http://host.docker.internal:5678/webhook/loop-spec-gen"
+      NODE_ENV: "production"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      qdrant:
+        condition: service_started
+    networks:
+      - shopping_network
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local
+  qdrant_data:
+    driver: local
+
+networks:
+  shopping_network:
+    name: shopping_network
+    driver: bridge

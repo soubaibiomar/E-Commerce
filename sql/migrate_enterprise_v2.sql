@@ -1,0 +1,70 @@
+-- Enterprise Migration for Loop Engineering
+
+-- 1. Update orders table
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS orderNumber VARCHAR(100) NULL;
+UPDATE orders SET orderNumber = CONCAT('ORD-2026-', LPAD(id, 5, '0')) WHERE orderNumber IS NULL OR orderNumber = '';
+ALTER TABLE orders MODIFY COLUMN orderNumber VARCHAR(100) NOT NULL UNIQUE;
+
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS totalAmount FLOAT DEFAULT 0;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS currency VARCHAR(10) DEFAULT 'USD';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS paymentStatus VARCHAR(50) DEFAULT 'PAID';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS riskScore INT DEFAULT 5;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS shippingCity VARCHAR(100) NULL;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS trackingNumber VARCHAR(100) NULL;
+
+-- 2. Update users table
+ALTER TABLE users ADD COLUMN IF NOT EXISTS role ENUM('CUSTOMER', 'SALES_REP', 'INVENTORY_MANAGER', 'ADMIN') DEFAULT 'CUSTOMER';
+
+-- Set first user as ADMIN
+UPDATE users SET role = 'ADMIN' WHERE id = 1;
+
+-- 3. Update products table
+ALTER TABLE products ADD COLUMN IF NOT EXISTS stockQuantity INT DEFAULT 100;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS warehouseLocation VARCHAR(100) DEFAULT 'Hub-A1';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS costPrice INT DEFAULT 0;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS viewsCount INT DEFAULT 0;
+
+-- 4. Create orderitems table
+CREATE TABLE IF NOT EXISTS orderitems (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  orderId INT NOT NULL,
+  productId INT NOT NULL,
+  quantity INT DEFAULT 1,
+  unitPrice FLOAT DEFAULT 0,
+  INDEX idx_orderId (orderId),
+  INDEX idx_productId (productId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 5. Create paymenttransactions table
+CREATE TABLE IF NOT EXISTS paymenttransactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  orderId INT NOT NULL,
+  transactionId VARCHAR(100) NOT NULL UNIQUE,
+  amount FLOAT NOT NULL,
+  currency VARCHAR(10) NOT NULL DEFAULT 'USD',
+  provider VARCHAR(50) NOT NULL DEFAULT 'STRIPE',
+  status VARCHAR(50) NOT NULL DEFAULT 'SUCCESS',
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_orderId (orderId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 6. Create chatsessions table
+CREATE TABLE IF NOT EXISTS chatsessions (
+  id VARCHAR(100) PRIMARY KEY,
+  userId INT NULL,
+  title VARCHAR(255) NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 7. Create chatmessages table
+CREATE TABLE IF NOT EXISTS chatmessages (
+  id VARCHAR(100) PRIMARY KEY,
+  sessionId VARCHAR(100) NOT NULL,
+  sender VARCHAR(50) NOT NULL,
+  text LONGTEXT NOT NULL,
+  role VARCHAR(50) NULL,
+  metadata LONGTEXT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_sessionId (sessionId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -1,0 +1,241 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  SALES_REP
+  INVENTORY_MANAGER
+  ADMIN
+}
+
+model Category {
+  id                  Int           @id @default(autoincrement())
+  categoryName        String        @db.VarChar(255)
+  categoryDescription String?       @db.LongText
+  creationDate        DateTime?     @default(now())
+  updationDate        String?       @db.VarChar(255)
+  subcategories       Subcategory[]
+  products            Product[]
+
+  @@map("category")
+}
+
+model Subcategory {
+  id           Int       @id @default(autoincrement())
+  categoryid   Int
+  subcategory  String    @db.VarChar(255)
+  creationDate DateTime? @default(now())
+  updationDate String?   @db.VarChar(255)
+  category     Category  @relation(fields: [categoryid], references: [id])
+  products     Product[]
+
+  @@index([categoryid])
+  @@map("subcategory")
+}
+
+model Product {
+  id                         Int             @id @default(autoincrement())
+  category                   Int
+  subCategory                Int?
+  productName                String?         @db.VarChar(255)
+  productCompany             String?         @db.VarChar(255)
+  productPrice               Int?
+  productPriceBeforeDiscount Int?
+  productDescription        String?         @db.LongText
+  productImage1              String?         @db.VarChar(255)
+  productImage2              String?         @db.VarChar(255)
+  productImage3              String?         @db.VarChar(255)
+  shippingCharge             Int?
+  productAvailability        String?         @db.VarChar(255)
+  postingDate                DateTime?       @default(now())
+  updationDate               String?         @db.VarChar(255)
+  specifications             String?         @db.LongText
+  productModel               String?         @db.VarChar(255)
+  ficheTechnique             String?         @db.LongText
+  stockQuantity              Int?            @default(100)
+  warehouseLocation          String?         @default("Hub-A1") @db.VarChar(100)
+  costPrice                  Int?            @default(0)
+  viewsCount                 Int?            @default(0)
+
+  categoryRel                Category        @relation(fields: [category], references: [id])
+  subCategoryRel             Subcategory?    @relation(fields: [subCategory], references: [id])
+  reviews                    ProductReview[]
+  orderItems                 OrderItem[]
+  wishlists                  Wishlist[]
+
+  @@index([category])
+  @@index([subCategory])
+  @@map("products")
+}
+
+model ProductReview {
+  id         Int       @id @default(autoincrement())
+  productId  Int
+  quality    Int?
+  price      Int?
+  value      Int?
+  name       String?   @db.VarChar(255)
+  summary    String?   @db.VarChar(255)
+  review     String?   @db.LongText
+  reviewDate DateTime? @default(now())
+  product    Product   @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@map("productreviews")
+}
+
+model User {
+  id              Int            @id @default(autoincrement())
+  name            String?        @db.VarChar(255)
+  email           String?        @db.VarChar(255)
+  contactno       BigInt?
+  password        String?        @db.VarChar(255)
+  role            Role?          @default(CUSTOMER)
+  shippingAddress String?        @db.LongText
+  shippingState   String?        @db.VarChar(255)
+  shippingCity    String?        @db.VarChar(255)
+  shippingPincode Int?
+  billingAddress  String?        @db.LongText
+  billingState    String?        @db.VarChar(255)
+  billingCity     String?        @db.VarChar(255)
+  billingPincode  Int?
+  regDate         DateTime?      @default(now())
+  updationDate    String?        @db.VarChar(255)
+  orders          Order[]
+  chatSessions    ChatSession[]
+  wishlists       Wishlist[]
+
+  @@map("users")
+}
+
+model Order {
+  id             Int                  @id @default(autoincrement())
+  userId         Int?
+  productId      String?              @db.VarChar(255)
+  quantity       Int?
+  orderNumber    String?              @unique @db.VarChar(100)
+  totalAmount    Float?               @default(0)
+  currency       String?              @default("USD") @db.VarChar(10)
+  paymentMethod  String?              @db.VarChar(100)
+  paymentStatus  String?              @default("PAID") @db.VarChar(50)
+  orderStatus    String?              @db.VarChar(55)
+  riskScore      Int?                 @default(5)
+  orderDate      DateTime?            @default(now())
+  shippingCity   String?              @db.VarChar(100)
+  trackingNumber String?              @db.VarChar(100)
+
+  user           User?                @relation(fields: [userId], references: [id])
+  items          OrderItem[]
+  payments       PaymentTransaction[]
+
+  @@index([userId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int     @default(1)
+  unitPrice Float   @default(0)
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("orderitems")
+}
+
+model PaymentTransaction {
+  id            Int       @id @default(autoincrement())
+  orderId       Int
+  transactionId String    @unique @db.VarChar(100)
+  amount        Float
+  currency      String    @db.VarChar(10)
+  provider      String    @db.VarChar(50)
+  status        String    @db.VarChar(50)
+  createdAt     DateTime? @default(now())
+
+  order         Order     @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@map("paymenttransactions")
+}
+
+model ChatSession {
+  id        String        @id @default(uuid())
+  userId    Int?
+  title     String?       @db.VarChar(255)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  user      User?         @relation(fields: [userId], references: [id])
+  messages  ChatMessage[]
+
+  @@map("chatsessions")
+}
+
+model ChatMessage {
+  id        String      @id @default(uuid())
+  sessionId String
+  sender    String      @db.VarChar(50)
+  text      String      @db.LongText
+  role      String?     @db.VarChar(50)
+  metadata  String?     @db.LongText
+  createdAt DateTime    @default(now())
+  session   ChatSession @relation(fields: [sessionId], references: [id])
+
+  @@index([sessionId])
+  @@map("chatmessages")
+}
+
+model Admin {
+  id           Int       @id @default(autoincrement())
+  username     String    @db.VarChar(255)
+  password     String    @db.VarChar(255)
+  creationDate DateTime? @default(now())
+  updationDate String?   @db.VarChar(255)
+
+  @@map("admin")
+}
+
+model UserLog {
+  id        Int       @id @default(autoincrement())
+  userEmail String?   @db.VarChar(255)
+  userip    String?   @db.VarChar(50)
+  loginTime DateTime? @default(now())
+  logout    String?   @db.VarChar(255)
+  status    Int?
+
+  @@map("userlog")
+}
+
+model OrderTrackHistory {
+  id          Int       @id @default(autoincrement())
+  orderId     Int?
+  status      String?   @db.VarChar(255)
+  remark      String?   @db.MediumText
+  postingDate DateTime? @default(now())
+
+  @@map("ordertrackhistory")
+}
+
+model Wishlist {
+  id          Int       @id @default(autoincrement())
+  userId      Int?
+  productId   Int?
+  postingDate DateTime? @default(now())
+
+  user        User?     @relation(fields: [userId], references: [id])
+  product     Product?  @relation(fields: [productId], references: [id])
+
+  @@index([userId])
+  @@index([productId])
+  @@map("wishlist")
+}
