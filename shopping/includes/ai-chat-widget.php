@@ -50,13 +50,8 @@ $currentPid = intval($_GET['pid'] ?? 0);
 <div id="ai-chat-widget-root" style="position:fixed; bottom:24px; right:24px; z-index:99999; font-family:'IBM Plex Sans', sans-serif;">
 	
 	<!-- Trigger Floating Button (Sharp 2px, Gold Border, Navy Surface) -->
-	<button id="aiChatTriggerBtn" onclick="toggleAiChat()" type="button" aria-label="Open AI Assistant" style="width:52px; height:52px; border-radius:2px; background:#0c1526; color:#d9b567; border:1px solid #c79a44; box-shadow:0 8px 24px rgba(0,0,0,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative; transition:all 0.2s ease; outline:none;">
-		<span class="hexagram-mark" id="aiChatIcon" style="width:24px; height:24px;">
-			<svg class="hexagram-svg" viewBox="0 0 24 24">
-				<polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-				<polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-			</svg>
-		</span>
+	<button id="aiChatTriggerBtn" onclick="toggleAiChat()" type="button" aria-label="Open AI Assistant" style="width:52px; height:52px; border-radius:2px; background:#0c1526; color:#d9b567; border:1px solid #c79a44; box-shadow:0 8px 24px rgba(0,0,0,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative; transition:all 0.2s ease; outline:none; padding:4px;">
+		<img src="assets/images/logo.jpg" alt="ZeyTech AI" style="width:36px; height:36px; object-fit:contain; border-radius:2px;">
 		<span style="position:absolute; top:-2px; right:-2px; width:8px; height:8px; background:#22c55e; border-radius:2px;"></span>
 	</button>
 
@@ -66,12 +61,7 @@ $currentPid = intval($_GET['pid'] ?? 0);
 		<!-- Header -->
 		<div style="padding:14px 18px; background:#111d33; color:#f2efe6; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(142,162,191,0.18);">
 			<div style="display:flex; align-items:center; gap:10px;">
-				<span class="hexagram-mark" style="width:20px; height:20px;">
-					<svg class="hexagram-svg" viewBox="0 0 24 24">
-						<polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-						<polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-					</svg>
-				</span>
+				<img src="assets/images/logo.jpg" alt="ZeyTech" style="width:28px; height:28px; object-fit:contain; border-radius:2px;">
 				<div>
 					<div style="font-family:'Fraunces', serif; font-weight:700; font-size:14px; line-height:1.2; color:#f2efe6;">ZeyTech AI Sales Engineer</div>
 					<div style="font-family:'Space Mono'; font-size:10px; color:#8ea2bf; display:flex; align-items:center; gap:4px; margin-top:2px;">

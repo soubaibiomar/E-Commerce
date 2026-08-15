@@ -40,17 +40,12 @@ $_SESSION['tp'] = $totalPrice;
 	<div class="container">
 		<div class="row" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
 			
-			<!-- Official App Logo & Hexagram Motif -->
+			<!-- Official App Logo & Brand Motif -->
 			<div class="col-xs-12 col-sm-4 col-md-3 logo-holder" style="padding-left:0;">
 				<div class="logo">
-					<a href="index.php" class="logo-brand">
-						<span class="hexagram-mark" style="width:26px; height:26px;">
-							<svg class="hexagram-svg" viewBox="0 0 24 24">
-								<polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-								<polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-							</svg>
-						</span>
-						<span>ZeyTech</span>
+					<a href="index.php" class="logo-brand" style="display:inline-flex; align-items:center; gap:10px; text-decoration:none;">
+						<img src="assets/images/logo.jpg" alt="ZeyTech Logo" style="height:38px; width:auto; object-fit:contain; border-radius:2px;">
+						<span style="font-family:'Fraunces', serif; font-size:22px; font-weight:700; color:#f2efe6; letter-spacing:-0.02em;">ZeyTech</span>
 						<span class="brand-badge">[HUB.A1]</span>
 					</a>
 				</div>		

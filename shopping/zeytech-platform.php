@@ -16,12 +16,7 @@
 
 <header class="top-nav" style="background:#0c1526; border-bottom:1px solid rgba(142,162,191,0.18); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100;">
     <div style="display:flex; align-items:center; gap:12px;">
-        <span class="hexagram-mark">
-            <svg class="hexagram-svg" viewBox="0 0 24 24">
-                <polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-                <polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-            </svg>
-        </span>
+        <img src="assets/images/logo.jpg" alt="ZeyTech Logo" style="height:36px; width:auto; object-fit:contain; border-radius:2px;">
         <div>
             <span style="font-family:'Fraunces', serif; font-size:18px; font-weight:700; color:#f2efe6; letter-spacing:-0.02em;">ZeyTech</span>
             <span style="font-family:'Space Mono', monospace; font-size:11px; color:#8ea2bf; margin-left:8px; text-transform:uppercase; letter-spacing:0.06em;">Platform Telemetry &bull; Hub-A1</span>
