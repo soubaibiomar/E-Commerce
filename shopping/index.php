@@ -23,17 +23,17 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 		<meta charset="utf-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-		<meta name="description" content="ZeyTech - Premium Commercial Hardware, Laptops & AI Multi-Agent Commerce">
+		<meta name="description" content="ZeyTech - Premium Commercial Hardware, Workstations, Displays & AI Multi-Agent Commerce">
 		<meta name="author" content="ZeyTech">
 	    <meta name="robots" content="all">
 
-	    <title>ZeyTech | Premium Electronics & Autonomous Commerce</title>
+	    <title>ZeyTech | Premium Electronics & Modern Commerce</title>
 
 	    <!-- Bootstrap Core CSS -->
 	    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 	    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 	    
-	    <!-- Authentic ZeyTech Brand Design System -->
+	    <!-- Harmonized ZeyTech Brand Design System -->
 	    <link rel="stylesheet" href="assets/css/modern-storefront.css">
 		<link rel="shortcut icon" href="assets/images/favicon.ico">
 	</head>
@@ -45,7 +45,7 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 <?php include('includes/menu-bar.php');?>
 </header>
 
-<div class="body-content" id="top-banner-and-menu" style="padding-top: 24px; padding-bottom: 60px;">
+<div class="body-content" id="top-banner-and-menu" style="padding-top: 28px; padding-bottom: 60px;">
 	<div class="container">
 		<div class="row">
 		
@@ -53,13 +53,14 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 			<div class="col-xs-12 col-sm-12 col-md-3 sidebar">
 				<?php include('includes/side-menu.php');?>
 
-				<!-- Hub Security Badge (Editorial Ledger Style) -->
-				<div style="background:#0c1526; border:1px solid rgba(142,162,191,0.18); border-radius:2px; padding:18px; margin-top:20px;">
-					<div style="font-family:'Space Mono', monospace; font-size:11px; font-weight:700; color:#c79a44; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">
-						[CASABLANCA.HUB_A1]
+				<!-- Hub Security Badge -->
+				<div style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:6px; padding:18px; margin-top:20px; box-shadow:var(--shadow-sm);">
+					<div style="font-size:12px; font-weight:600; color:#d9b45d; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+						<i class="fa fa-shield"></i>
+						<span>Authentic Moroccan Stock</span>
 					</div>
-					<div style="font-size:12px; color:#8ea2bf; line-height:1.5;">
-						All inventory is real-time reserved and verified under 3-state warehouse locks before cryptographic settlement.
+					<div style="font-size:12px; color:#94a3b8; line-height:1.5;">
+						All hardware is backed by 1-year official manufacturer warranty and stored in Casablanca Central Hub.
 					</div>
 				</div>
 			</div>
@@ -67,34 +68,29 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 			<!-- Right Main Workspace / Hero & Products -->
 			<div class="col-xs-12 col-sm-12 col-md-9 homebanner-holder">
 				
-				<!-- Editorial Hero Banner (Fraunces & Hexagram Mark) -->
+				<!-- Refined Hero Banner -->
 				<div class="modern-hero-banner">
 					<div class="hero-eyebrow">
-						<span class="hexagram-mark" style="width:16px; height:16px;">
-							<svg class="hexagram-svg" viewBox="0 0 24 24">
-								<polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-								<polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-							</svg>
-						</span>
-						Casablanca Regional Fulfillment &bull; Official 2026 Commercial Hardware
+						<i class="fa fa-star" style="color:#d9b45d; font-size:11px;"></i>
+						Official 2026 Commercial Hardware &bull; Casablanca
 					</div>
 					<h1 class="hero-headline">
-						Enterprise-Grade Tech.<br>Delivered <em>Across Morocco</em>.
+						Enterprise-Grade Technology.<br>Delivered <em>Across Morocco</em>.
 					</h1>
 					<p class="hero-subtext">
-						Explore M3 Max workstations, 4K displays, and precision audio gear with instant Darija AI assistance and cryptographic multi-currency checkout.
+						Explore high-performance M3 workstations, 4K OLED displays, and studio acoustics with instant AI support and verified domestic delivery.
 					</p>
 					<div style="display:flex; gap:12px; flex-wrap:wrap;">
 						<a href="category.php?cid=1" class="btn-primary">
-							EXPLORE CATALOG &rarr;
+							<i class="fa fa-shopping-bag"></i> Browse Products
 						</a>
-						<a href="zeytech-platform.php" target="_blank" class="btn-ghost">
-							[TELEMETRY.DASHBOARD]
+						<a href="track-orders.php" class="btn-ghost">
+							<i class="fa fa-truck"></i> Track Delivery
 						</a>
 					</div>
 				</div>
 
-				<!-- 4 Value Proposition Manifest Cards -->
+				<!-- 4 Value Proposition Cards -->
 				<div class="value-props-grid">
 					<div class="value-prop-card">
 						<span class="value-prop-num">01</span>
@@ -124,23 +120,23 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 						<span class="value-prop-num">04</span>
 						<div>
 							<div class="value-prop-title">Multi-Currency</div>
-							<div class="value-prop-desc">MAD, USD, EUR Real-Time Settlement</div>
+							<div class="value-prop-desc">MAD, USD, EUR Live Settlement</div>
 						</div>
 					</div>
 				</div>
 
 				<!-- Featured Hardware Showcase -->
-				<div style="display:flex; justify-content:space-between; align-items:baseline; margin: 32px 0 20px 0; border-bottom:1px solid rgba(142,162,191,0.18); padding-bottom:10px;">
+				<div style="display:flex; justify-content:space-between; align-items:baseline; margin: 32px 0 20px 0; border-bottom:1px solid rgba(226,232,240,0.12); padding-bottom:12px;">
 					<div>
-						<h2 style="font-family:'Fraunces', serif; font-size:22px; font-weight:700; color:#f2efe6; margin:0; letter-spacing:-0.02em;">
-							Featured Hardware
+						<h2 style="font-size:20px; font-weight:600; color:#ffffff; margin:0;">
+							Featured Products
 						</h2>
-						<div style="font-family:'Space Mono', monospace; font-size:11px; color:#8ea2bf; margin-top:2px;">
-							[STOCK: REAL-TIME VERIFIED AT CENTRAL HUB-A1]
+						<div style="font-size:12px; color:#94a3b8; margin-top:2px;">
+							Hand-picked workstations, displays, and audio hardware
 						</div>
 					</div>
-					<a href="category.php?cid=1" style="font-family:'Space Mono', monospace; font-size:11px; font-weight:700; color:#d9b567; text-decoration:none;">
-						ALL CATEGORIES &rarr;
+					<a href="category.php?cid=1" style="font-size:12px; font-weight:600; color:#d9b45d; text-decoration:none;">
+						View All &rarr;
 					</a>
 				</div>
 
@@ -151,13 +147,26 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 					foreach($products as $row) {
 						$pid = intval($row['id']);
 						$img = !empty($row['productImage1']) ? 'admin/productimages/'.$pid.'/'.$row['productImage1'] : 'assets/images/blank.gif';
+						$stockQty = intval($row['in_stock_units'] ?? 10);
+						$isLowStock = ($stockQty > 0 && $stockQty <= 5);
+						$isOutOfStock = ($stockQty <= 0);
 					?>
 					<div class="col-xs-12 col-sm-6 col-md-4">
 						<div class="modern-product-card">
 							<div class="product-img-wrapper">
-								<span class="product-badge-stock">
-									[IN STOCK]
-								</span>
+								<?php if($isOutOfStock) { ?>
+									<span class="product-badge-stock" style="background:rgba(239,68,68,0.12); color:#ef4444; border-color:rgba(239,68,68,0.3);">
+										Out of Stock
+									</span>
+								<?php } elseif($isLowStock) { ?>
+									<span class="product-badge-stock" style="background:rgba(245,158,11,0.12); color:#f59e0b; border-color:rgba(245,158,11,0.3);">
+										Low Stock (<?php echo $stockQty; ?> left)
+									</span>
+								<?php } else { ?>
+									<span class="product-badge-stock">
+										● In Stock
+									</span>
+								<?php } ?>
 								<a href="product-details.php?pid=<?php echo $pid; ?>" style="display:flex; align-items:center; justify-content:center; width:100%; height:100%;">
 									<img src="<?php echo e($img); ?>" alt="<?php echo e($row['productName']); ?>" onerror="this.src='assets/images/blank.gif';">
 								</a>
@@ -180,7 +189,7 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 								</div>
 
 								<a href="index.php?page=product&action=add&id=<?php echo $pid; ?>" class="btn-add-cart-modern">
-									+ ADD
+									<i class="fa fa-shopping-cart"></i> Add
 								</a>
 							</div>
 						</div>

@@ -113,18 +113,18 @@ if ($row) {
 <?php include('includes/menu-bar.php');?>
 </header>
 
-<!-- Breadcrumb (Space Mono Editorial Line) -->
-<div style="background:#0c1526; border-bottom:1px solid rgba(142,162,191,0.18); padding:10px 0; font-family:'Space Mono', monospace; font-size:11px;">
+<!-- Breadcrumb -->
+<div style="background:#0b162c; border-bottom:1px solid rgba(226,232,240,0.10); padding:10px 0; font-size:12px;">
 	<div class="container">
 		<?php if ($row) { ?>
-		<div style="color:#8ea2bf;">
-			<a href="index.php" style="color:#8ea2bf; text-decoration:none;">CATALOG</a>
-			<span style="margin:0 6px; color:#5e7391;">/</span>
-			<a href="category.php?cid=<?php echo e($row['category']); ?>" style="color:#8ea2bf; text-decoration:none;"><?php echo strtoupper(e($row['categoryName']));?></a>
-			<span style="margin:0 6px; color:#5e7391;">/</span>
-			<a href="sub-category.php?scid=<?php echo e($row['subCategory']); ?>" style="color:#8ea2bf; text-decoration:none;"><?php echo strtoupper(e($row['subcategoryName']));?></a>
-			<span style="margin:0 6px; color:#5e7391;">/</span>
-			<span style="color:#d9b567; font-weight:700;">#<?php echo str_pad($row['id'], 4, '0', STR_PAD_LEFT); ?></span>
+		<div style="color:#94a3b8;">
+			<a href="index.php" style="color:#94a3b8; text-decoration:none;">Home</a>
+			<span style="margin:0 6px; color:#64748b;">/</span>
+			<a href="category.php?cid=<?php echo e($row['category']); ?>" style="color:#94a3b8; text-decoration:none;"><?php echo e($row['categoryName']);?></a>
+			<span style="margin:0 6px; color:#64748b;">/</span>
+			<a href="sub-category.php?scid=<?php echo e($row['subCategory']); ?>" style="color:#94a3b8; text-decoration:none;"><?php echo e($row['subcategoryName']);?></a>
+			<span style="margin:0 6px; color:#64748b;">/</span>
+			<span style="color:#d9b45d; font-weight:600;"><?php echo e($row['productName']);?></span>
 		</div>
 		<?php } ?>
 	</div>
@@ -138,46 +138,46 @@ if ($row) {
 			$shipping = floatval($row['shippingCharge']);
 			$discount = ($oldPrice > $price && $oldPrice > 0) ? round((($oldPrice - $price) / $oldPrice) * 100) : 0;
 		?>
-		<div class="manifest-panel" style="margin-bottom:32px;">
+		<div class="manifest-panel" style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:8px; padding:24px; margin-bottom:32px; box-shadow:var(--shadow-md);">
 			<div class="row">
 				<!-- Media Showcase Column (2D Gallery & 3D Interactive WebGL Model) -->
 				<div class="col-xs-12 col-md-5">
 					<!-- View Mode Switcher -->
-					<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-						<div style="display:flex; gap:4px;">
-							<button id="viewBtn2D" type="button" class="btn-primary" onclick="switchMediaView('2d')" style="padding:4px 12px; font-size:11px; font-family:'Space Mono';">
-								2D PHOTOS
+					<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+						<div style="display:flex; gap:6px;">
+							<button id="viewBtn2D" type="button" class="btn-primary" onclick="switchMediaView('2d')" style="padding:6px 14px; font-size:12px; border-radius:4px;">
+								<i class="fa fa-image"></i> Photos
 							</button>
-							<button id="viewBtn3D" type="button" class="btn-ghost" onclick="switchMediaView('3d')" style="padding:4px 12px; font-size:11px; font-family:'Space Mono';">
-								3D WEBGL STUDIO
+							<button id="viewBtn3D" type="button" class="btn-ghost" onclick="switchMediaView('3d')" style="padding:6px 14px; font-size:12px; border-radius:4px;">
+								<i class="fa fa-cube"></i> 3D Studio
 							</button>
 						</div>
-						<span class="tag-pill tag-gold" style="font-size:10px;">
-							[360&deg; ROTATION]
+						<span style="font-size:11px; font-weight:600; color:#d9b45d; background:rgba(197,155,67,0.12); padding:3px 10px; border-radius:12px; border:1px solid rgba(197,155,67,0.25);">
+							360&deg; Interactive
 						</span>
 					</div>
 
 					<!-- 2D Photo Container -->
 					<div id="container2D">
-						<div style="background:#080e1a; border:1px solid rgba(142,162,191,0.18); border-radius:2px; padding:24px; text-align:center; position:relative; min-height:380px; display:flex; align-items:center; justify-content:center;">
+						<div style="background:#0b162c; border:1px solid rgba(226,232,240,0.10); border-radius:6px; padding:24px; text-align:center; position:relative; min-height:380px; display:flex; align-items:center; justify-content:center;">
 							<?php if ($discount > 0) { ?>
-							<span class="tag-pill tag-gold" style="position:absolute; top:12px; left:12px; z-index:2; font-size:11px;">-<?php echo e($discount); ?>% OFF</span>
+							<span style="position:absolute; top:12px; left:12px; z-index:2; font-size:11px; font-weight:700; background:#c59b43; color:#0b162c; padding:3px 8px; border-radius:4px;">-<?php echo e($discount); ?>% OFF</span>
 							<?php } ?>
 							<img id="mainProductImage" src="<?php echo e(get_product_image_url($row, 1)); ?>" alt="<?php echo e($row['productName']);?>" style="max-height:340px; max-width:90%; object-fit:contain; transition:transform 0.25s ease;">
 						</div>
 
 						<!-- Thumbnails Strip -->
 						<div style="display:flex; gap:10px; margin-top:12px; justify-content:center;">
-							<div onclick="document.getElementById('mainProductImage').src='<?php echo e(get_product_image_url($row, 1)); ?>'" style="width:68px; height:68px; background:#080e1a; border:1px solid #c79a44; border-radius:2px; padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+							<div onclick="document.getElementById('mainProductImage').src='<?php echo e(get_product_image_url($row, 1)); ?>'" style="width:68px; height:68px; background:#0b162c; border:2px solid #c59b43; border-radius:4px; padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
 								<img src="<?php echo e(get_product_image_url($row, 1)); ?>" style="max-height:100%; max-width:100%; object-fit:contain;">
 							</div>
 							<?php if (!empty($row['productImage2'])) { ?>
-							<div onclick="document.getElementById('mainProductImage').src='<?php echo e(get_product_image_url($row, 2)); ?>'" style="width:68px; height:68px; background:#080e1a; border:1px solid rgba(142,162,191,0.2); border-radius:2px; padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+							<div onclick="document.getElementById('mainProductImage').src='<?php echo e(get_product_image_url($row, 2)); ?>'" style="width:68px; height:68px; background:#0b162c; border:1px solid rgba(226,232,240,0.15); border-radius:4px; padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
 								<img src="<?php echo e(get_product_image_url($row, 2)); ?>" style="max-height:100%; max-width:100%; object-fit:contain;">
 							</div>
 							<?php } ?>
 							<?php if (!empty($row['productImage3'])) { ?>
-							<div onclick="document.getElementById('mainProductImage').src='<?php echo e(get_product_image_url($row, 3)); ?>'" style="width:68px; height:68px; background:#080e1a; border:1px solid rgba(142,162,191,0.2); border-radius:2px; padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+							<div onclick="document.getElementById('mainProductImage').src='<?php echo e(get_product_image_url($row, 3)); ?>'" style="width:68px; height:68px; background:#0b162c; border:1px solid rgba(226,232,240,0.15); border-radius:4px; padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
 								<img src="<?php echo e(get_product_image_url($row, 3)); ?>" style="max-height:100%; max-width:100%; object-fit:contain;">
 							</div>
 							<?php } ?>
@@ -186,36 +186,36 @@ if ($row) {
 
 					<!-- 3D Interactive WebGL Model Studio -->
 					<div id="container3D" style="display:none;">
-						<div style="background:#080e1a; border:1px solid rgba(142,162,191,0.18); border-radius:2px; overflow:hidden; position:relative;">
+						<div style="background:#0b162c; border:1px solid rgba(226,232,240,0.10); border-radius:6px; overflow:hidden; position:relative;">
 							<!-- 3D Canvas Target -->
 							<div id="webgl3DCanvas" style="width:100%; height:380px; cursor:grab;"></div>
 
 							<!-- Floating 3D Tool Overlay -->
-							<div style="position:absolute; top:12px; left:12px; background:rgba(8,14,26,0.85); backdrop-filter:blur(4px); padding:4px 10px; border-radius:2px; font-family:'Space Mono'; font-size:10px; color:#8ea2bf; border:1px solid rgba(142,162,191,0.2); pointer-events:none;">
-								[DRAG: ROTATE &bull; SCROLL: ZOOM]
+							<div style="position:absolute; top:12px; left:12px; background:rgba(11,22,44,0.85); backdrop-filter:blur(4px); padding:4px 10px; border-radius:4px; font-size:11px; color:#94a3b8; border:1px solid rgba(226,232,240,0.15); pointer-events:none;">
+								<i class="fa fa-arrows"></i> Drag to Rotate &bull; Scroll to Zoom
 							</div>
 
 							<!-- Studio Controls Toolbar -->
-							<div style="padding:10px 14px; background:#0c1526; border-top:1px solid rgba(142,162,191,0.18); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+							<div style="padding:10px 14px; background:#182847; border-top:1px solid rgba(226,232,240,0.10); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
 								<!-- Color Finishes -->
 								<div style="display:flex; align-items:center; gap:6px;">
-									<span style="font-family:'Space Mono'; font-size:10px; font-weight:700; color:#8ea2bf; text-transform:uppercase;">FINISH:</span>
-									<button type="button" onclick="window.active3DViewer.setColor('#94a3b8')" title="Natural Titanium / Silver" style="width:16px; height:16px; border-radius:2px; background:#94a3b8; border:1px solid #f2efe6; cursor:pointer; outline:none;"></button>
-									<button type="button" onclick="window.active3DViewer.setColor('#080e1a')" title="Space Black / Graphite" style="width:16px; height:16px; border-radius:2px; background:#080e1a; border:1px solid #f2efe6; cursor:pointer; outline:none;"></button>
-									<button type="button" onclick="window.active3DViewer.setColor('#1e3a8a')" title="Deep Navy" style="width:16px; height:16px; border-radius:2px; background:#1e3a8a; border:1px solid #f2efe6; cursor:pointer; outline:none;"></button>
-									<button type="button" onclick="window.active3DViewer.setColor('#c79a44')" title="ZeyTech Gold" style="width:16px; height:16px; border-radius:2px; background:#c79a44; border:1px solid #f2efe6; cursor:pointer; outline:none;"></button>
+									<span style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase;">Finish:</span>
+									<button type="button" onclick="window.active3DViewer.setColor('#94a3b8')" title="Silver" style="width:18px; height:18px; border-radius:50%; background:#94a3b8; border:1px solid #ffffff; cursor:pointer; outline:none;"></button>
+									<button type="button" onclick="window.active3DViewer.setColor('#0b162c')" title="Space Black" style="width:18px; height:18px; border-radius:50%; background:#0b162c; border:1px solid #ffffff; cursor:pointer; outline:none;"></button>
+									<button type="button" onclick="window.active3DViewer.setColor('#1e3a8a')" title="Deep Navy" style="width:18px; height:18px; border-radius:50%; background:#1e3a8a; border:1px solid #ffffff; cursor:pointer; outline:none;"></button>
+									<button type="button" onclick="window.active3DViewer.setColor('#c59b43')" title="ZeyTech Gold" style="width:18px; height:18px; border-radius:50%; background:#c59b43; border:1px solid #ffffff; cursor:pointer; outline:none;"></button>
 								</div>
 
 								<!-- Studio Action Buttons -->
-								<div style="display:flex; gap:4px;">
-									<button type="button" onclick="toggle3DRotation(this)" class="btn-ghost" style="padding:2px 8px; font-size:10px; font-family:'Space Mono';">
-										AUTO-SPIN
+								<div style="display:flex; gap:6px;">
+									<button type="button" onclick="toggle3DRotation(this)" class="btn-ghost" style="padding:4px 10px; font-size:11px; border-radius:4px;">
+										Auto-Spin
 									</button>
-									<button type="button" onclick="cycle3DLighting()" class="btn-ghost" style="padding:2px 8px; font-size:10px; font-family:'Space Mono';">
-										LIGHTING
+									<button type="button" onclick="cycle3DLighting()" class="btn-ghost" style="padding:4px 10px; font-size:11px; border-radius:4px;">
+										Lighting
 									</button>
-									<button type="button" onclick="toggle3DWireframe(this)" class="btn-ghost" style="padding:2px 8px; font-size:10px; font-family:'Space Mono';">
-										WIREFRAME
+									<button type="button" onclick="toggle3DWireframe(this)" class="btn-ghost" style="padding:4px 10px; font-size:11px; border-radius:4px;">
+										Wireframe
 									</button>
 								</div>
 							</div>
@@ -225,36 +225,38 @@ if ($row) {
 
 				<!-- Product Info Column -->
 				<div class="col-xs-12 col-md-7" style="padding-left:28px;">
-					<div style="font-family:'Space Mono', monospace; font-size:11px; font-weight:700; text-transform:uppercase; color:#c79a44; letter-spacing:0.08em; margin-bottom:6px;">
-						[<?php echo strtoupper(e($row['productCompany'])); ?> &bull; <?php echo strtoupper(e($row['categoryName'])); ?>]
+					<div style="font-size:12px; font-weight:600; text-transform:uppercase; color:#d9b45d; letter-spacing:0.05em; margin-bottom:6px;">
+						<?php echo e($row['productCompany']); ?> &bull; <?php echo e($row['categoryName']); ?>
 					</div>
 
-					<h1 style="font-family:'Fraunces', serif; font-size:28px; font-weight:700; color:#f2efe6; line-height:1.2; margin:0 0 12px 0; letter-spacing:-0.02em;">
+					<h1 style="font-family:'Fraunces', serif; font-size:26px; font-weight:700; color:#ffffff; line-height:1.25; margin:0 0 12px 0;">
 						<?php echo e($row['productName']);?>
 					</h1>
 
 					<!-- Rating and Reviews Count -->
 					<div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-						<div style="color:#d9b567; font-size:13px;">
+						<div style="color:#d9b45d; font-size:13px;">
 							<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
 						</div>
-						<span style="font-family:'Space Mono'; font-size:11px; color:#8ea2bf;">(<?php echo e($numReviews); ?> LEDGER REVIEWS)</span>
+						<span style="font-size:12px; color:#94a3b8;">(<?php echo e($numReviews); ?> Customer Reviews)</span>
 					</div>
 
 					<!-- Price Container with Region Pricing -->
-					<div style="background:#111d33; border:1px solid rgba(142,162,191,0.18); border-radius:2px; padding:14px 18px; margin-bottom:20px; display:flex; align-items:baseline; gap:12px;">
-						<span style="font-family:'Space Mono'; font-size:24px; font-weight:700; color:#d9b567;"><?php echo format_price($price); ?></span>
+					<div style="background:#182847; border:1px solid rgba(226,232,240,0.10); border-radius:6px; padding:16px 20px; margin-bottom:20px; display:flex; align-items:baseline; gap:12px;">
+						<span style="font-family:'Space Mono'; font-size:24px; font-weight:700; color:#d9b45d;"><?php echo format_price($price); ?></span>
 						<?php if ($oldPrice > $price) { ?>
-						<span style="font-family:'Space Mono'; font-size:14px; color:#5e7391; text-decoration:line-through;"><?php echo format_price($oldPrice); ?></span>
-						<span class="tag-pill tag-gold" style="font-size:11px;">SAVE <?php echo format_price($oldPrice - $price); ?></span>
+						<span style="font-family:'Space Mono'; font-size:14px; color:#64748b; text-decoration:line-through;"><?php echo format_price($oldPrice); ?></span>
+						<span style="font-size:11px; font-weight:700; background:rgba(197,155,67,0.15); color:#d9b45d; border:1px solid rgba(197,155,67,0.3); padding:2px 8px; border-radius:4px;">
+							Save <?php echo format_price($oldPrice - $price); ?>
+						</span>
 						<?php } ?>
 					</div>
 
-					<!-- Key Tech Highlights Pill Box -->
+					<!-- Key Tech Highlights -->
 					<?php if(!empty($specs)) { ?>
-					<div style="background:#080e1a; border:1px solid rgba(142,162,191,0.18); border-radius:2px; padding:14px 18px; margin-bottom:20px;">
-						<div style="font-family:'Space Mono'; font-size:10px; font-weight:700; text-transform:uppercase; color:#8ea2bf; letter-spacing:0.08em; margin-bottom:8px;">
-							[FICHE TECHNIQUE &bull; HIGHLIGHTS]
+					<div style="background:#0b162c; border:1px solid rgba(226,232,240,0.10); border-radius:6px; padding:14px 18px; margin-bottom:20px;">
+						<div style="font-size:11px; font-weight:600; text-transform:uppercase; color:#94a3b8; letter-spacing:0.05em; margin-bottom:8px;">
+							Key Specifications
 						</div>
 						<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:8px; font-size:12px;">
 							<?php 
@@ -263,8 +265,8 @@ if ($row) {
 								if($shownCount < 4) {
 							?>
 							<div>
-								<strong style="color:#f2efe6; font-family:'IBM Plex Sans';"><?php echo e($k); ?>:</strong> 
-								<span style="color:#8ea2bf; font-family:'Space Mono'; font-size:11px;"><?php echo e(substr($v, 0, 45)); ?><?php echo strlen($v) > 45 ? '...' : ''; ?></span>
+								<strong style="color:#ffffff;"><?php echo e($k); ?>:</strong> 
+								<span style="color:#94a3b8; font-size:12px;"><?php echo e(substr($v, 0, 45)); ?><?php echo strlen($v) > 45 ? '...' : ''; ?></span>
 							</div>
 							<?php 
 									$shownCount++;
@@ -276,46 +278,46 @@ if ($row) {
 					<?php } ?>
 
 					<!-- Meta details -->
-					<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-bottom:20px; font-size:13px; font-family:'Space Mono';">
+					<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-bottom:20px; font-size:13px;">
 						<div>
-							<span style="color:#8ea2bf;">AVAILABILITY:</span> 
+							<span style="color:#94a3b8;">Availability:</span> 
 							<?php if ($row['productAvailability'] == 'In Stock') { ?>
-							<span style="color:#22c55e; font-weight:700;">[IN STOCK]</span>
+							<span style="color:#10b981; font-weight:600;">● In Stock</span>
 							<?php } else { ?>
-							<span style="color:#ef4444; font-weight:700;">[OUT OF STOCK]</span>
+							<span style="color:#ef4444; font-weight:600;">Out of Stock</span>
 							<?php } ?>
 						</div>
 						<div>
-							<span style="color:#8ea2bf;">DELIVERY:</span> 
-							<span><?php echo ($shipping == 0) ? '<span style="color:#22c55e; font-weight:700;">FREE EXPRESS</span>' : format_price($shipping); ?></span>
+							<span style="color:#94a3b8;">Shipping:</span> 
+							<span><?php echo ($shipping == 0) ? '<span style="color:#10b981; font-weight:600;">Free Delivery</span>' : format_price($shipping); ?></span>
 						</div>
 					</div>
 
 					<!-- Quick Description -->
-					<div style="font-size:13px; color:#8ea2bf; line-height:1.6; margin-bottom:24px;">
+					<div style="font-size:13px; color:#94a3b8; line-height:1.6; margin-bottom:24px;">
 						<?php echo nl2br(e(substr($row['productDescription'], 0, 220))); ?>...
 					</div>
 
 					<!-- Action Buttons -->
 					<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:24px;">
 						<?php if ($row['productAvailability'] == 'In Stock') { ?>
-						<a href="product-details.php?action=add&id=<?php echo e($row['id']); ?>" class="btn-primary" style="padding:12px 28px; font-family:'Space Mono'; font-size:12px;">
-							+ ADD TO BAG
+						<a href="product-details.php?action=add&id=<?php echo e($row['id']); ?>" class="btn-primary" style="padding:12px 28px; font-size:13px; border-radius:4px;">
+							<i class="fa fa-shopping-cart"></i> Add to Cart
 						</a>
 						<?php } ?>
-						<a href="product-details.php?pid=<?php echo e($row['id']);?>&action=wishlist" class="btn-ghost" style="padding:12px 20px; font-family:'Space Mono'; font-size:12px;">
-							SAVE TO MANIFEST
+						<a href="product-details.php?pid=<?php echo e($row['id']);?>&action=wishlist" class="btn-ghost" style="padding:12px 20px; font-size:13px; border-radius:4px;">
+							<i class="fa fa-heart-o"></i> Save to Wishlist
 						</a>
 					</div>
 
 					<!-- Moroccan Domestic Shipping Rate Calculator -->
-					<div style="background:#111d33; border:1px solid rgba(142,162,191,0.18); border-radius:2px; padding:14px 18px; margin-bottom:20px;">
-						<div style="font-family:'Space Mono'; font-size:10px; font-weight:700; text-transform:uppercase; color:#c79a44; letter-spacing:0.08em; margin-bottom:8px;">
-							[CASABLANCA HUB-A1 DOMESTIC DISPATCH TARIFF]
+					<div style="background:#182847; border:1px solid rgba(226,232,240,0.10); border-radius:6px; padding:14px 18px; margin-bottom:20px;">
+						<div style="font-size:11px; font-weight:600; text-transform:uppercase; color:#d9b45d; letter-spacing:0.05em; margin-bottom:8px;">
+							<i class="fa fa-truck"></i> Domestic Delivery Calculator
 						</div>
 						<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-							<select id="shippingRegionSelect" style="width:220px; font-size:12px; font-family:'Space Mono'; background:#080e1a; border:1px solid rgba(142,162,191,0.25); color:#f2efe6; padding:6px 10px; border-radius:2px; outline:none;" onchange="calculateProductShipping()">
-								<option value="Casablanca-Settat">Casablanca-Settat (Hub-A1)</option>
+							<select id="shippingRegionSelect" style="width:220px; font-size:12px; font-family:'IBM Plex Sans'; background:#0b162c; border:1px solid rgba(226,232,240,0.15); color:#f8fafc; padding:8px 10px; border-radius:4px; outline:none;" onchange="calculateProductShipping()">
+								<option value="Casablanca-Settat">Casablanca-Settat (Hub)</option>
 								<option value="Rabat-Salé-Kénitra">Rabat-Salé-Kénitra</option>
 								<option value="Marrakech-Safi">Marrakech-Safi</option>
 								<option value="Tanger-Tétouan-Al Hoceïma">Tanger-Tétouan</option>
@@ -324,7 +326,7 @@ if ($row) {
 								<option value="Oriental">Oriental (Oujda)</option>
 								<option value="Laâyoune-Sakia El Hamra">Laâyoune</option>
 							</select>
-							<div id="shippingQuoteResult" style="font-family:'Space Mono'; font-size:12px; font-weight:700; color:#22c55e;">
+							<div id="shippingQuoteResult" style="font-family:'Space Mono'; font-size:12px; font-weight:700; color:#10b981;">
 								CTM: 35.00 MAD &bull; 24h Transit
 							</div>
 						</div>
@@ -334,13 +336,13 @@ if ($row) {
 		</div>
 
 		<!-- Product Full Description & Fiche Technique Tabs -->
-		<div class="manifest-panel" style="padding:28px; margin-bottom:40px;">
-			<div style="margin-bottom:20px; border-bottom:1px solid rgba(142,162,191,0.18); padding-bottom:12px;">
-				<h3 style="font-family:'Fraunces', serif; font-size:22px; font-weight:700; color:#f2efe6; margin:0 0 4px 0; letter-spacing:-0.02em;">
-					Fiche Technique &amp; Specifications
+		<div class="manifest-panel" style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:8px; padding:28px; margin-bottom:40px; box-shadow:var(--shadow-md);">
+			<div style="margin-bottom:20px; border-bottom:1px solid rgba(226,232,240,0.10); padding-bottom:12px;">
+				<h3 style="font-family:'Fraunces', serif; font-size:20px; font-weight:700; color:#ffffff; margin:0 0 4px 0;">
+					Technical Specifications &amp; Details
 				</h3>
-				<p style="font-family:'Space Mono'; font-size:11px; color:#8ea2bf; margin:0;">
-					[VERIFIED HARDWARE LEDGER DATA &bull; CASABLANCA REPO]
+				<p style="font-size:12px; color:#94a3b8; margin:0;">
+					Verified hardware specifications &bull; Casablanca Central Warehouse
 				</p>
 			</div>
 

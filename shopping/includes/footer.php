@@ -6,24 +6,19 @@
 				<div class="footer-brand">
 					<div class="logo" style="margin-bottom:14px;">
 						<a href="index.php" class="logo-brand" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
-							<span class="hexagram-mark" style="width:24px; height:24px;">
-								<svg class="hexagram-svg" viewBox="0 0 24 24">
-									<polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-									<polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-								</svg>
-							</span>
-							<span style="font-family:'Fraunces', serif; font-size:20px; font-weight:700; color:#f2efe6;">ZeyTech</span>
+							<img src="assets/images/logo.jpg" alt="ZeyTech Logo" class="brand-logo-img" style="height:36px;">
+							<span style="font-family:'Fraunces', serif; font-size:20px; font-weight:700; color:#ffffff;">ZeyTech</span>
 						</a>
 					</div>
-					<p style="font-size:13px; color:#8ea2bf; line-height:1.6; max-width:320px;">
-						Casablanca Regional Central Hub-A1. Enterprise hardware, M3 workstations, 3D WebGL inspection, and autonomous multi-agent settlement.
+					<p style="font-size:13px; color:#94a3b8; line-height:1.6; max-width:320px;">
+						Casablanca Regional Central Hub. Enterprise hardware, M3 workstations, 3D WebGL inspection, and autonomous commerce settlement.
 					</p>
 				</div>
 			</div>
 
 			<!-- Quick Categories -->
 			<div class="col-xs-6 col-sm-3 col-md-2" style="margin-bottom:24px;">
-				<h4>CATALOG</h4>
+				<h4>Categories</h4>
 				<ul>
 					<?php 
 					$footCats = db_fetch_all("SELECT id, categoryName FROM category ORDER BY id ASC LIMIT 5");
@@ -35,23 +30,23 @@
 
 			<!-- Customer Care -->
 			<div class="col-xs-6 col-sm-3 col-md-3" style="margin-bottom:24px;">
-				<h4>MANAGEMENT</h4>
+				<h4>Operations & Support</h4>
 				<ul>
-					<li><a href="zeytech-ops-console.html" target="_blank">[OPS.CONSOLE]</a></li>
-					<li><a href="zeytech-platform.php" target="_blank">[TELEMETRY]</a></li>
-					<li><a href="track-orders.php">Waybill Tracking</a></li>
-					<li><a href="order-history.php">Settled Orders</a></li>
-					<li><a href="my-wishlist.php">Saved Manifest</a></li>
+					<li><a href="zeytech-ops-console.html" target="_blank"><i class="fa fa-sliders" style="margin-right:4px;"></i> Merchant Console</a></li>
+					<li><a href="zeytech-platform.php" target="_blank"><i class="fa fa-line-chart" style="margin-right:4px;"></i> System Telemetry</a></li>
+					<li><a href="track-orders.php"><i class="fa fa-truck" style="margin-right:4px;"></i> Track Delivery</a></li>
+					<li><a href="order-history.php"><i class="fa fa-history" style="margin-right:4px;"></i> Order History</a></li>
+					<li><a href="my-wishlist.php"><i class="fa fa-heart" style="margin-right:4px;"></i> Saved Items</a></li>
 				</ul>
 			</div>
 
 			<!-- Newsletter & Guarantee -->
 			<div class="col-xs-12 col-sm-12 col-md-3" style="margin-bottom:24px;">
-				<h4>COMMERCIAL DISPATCH</h4>
-				<p style="font-size:12px; color:#8ea2bf; margin-bottom:12px;">Subscribe for Casablanca inventory restock announcements.</p>
-				<form onsubmit="event.preventDefault(); alert('Subscribed to Casablanca commercial dispatch.');" style="display:flex; gap:6px;">
-					<input type="email" placeholder="work.email@domain.com" required style="background:#080e1a; border:1px solid rgba(142,162,191,0.25); border-radius:2px; padding:8px 12px; color:#f2efe6; font-size:12px; font-family:'Space Mono'; width:100%; outline:none;">
-					<button type="submit" class="btn-primary" style="padding:8px 14px; font-size:11px; flex-shrink:0;">JOIN</button>
+				<h4>Newsletter</h4>
+				<p style="font-size:12px; color:#94a3b8; margin-bottom:12px;">Subscribe for new hardware arrivals and Casablanca inventory updates.</p>
+				<form onsubmit="event.preventDefault(); alert('Subscribed to Casablanca commercial updates.');" style="display:flex; gap:6px;">
+					<input type="email" placeholder="Enter your email..." required style="background:#0b162c; border:1px solid rgba(226,232,240,0.15); border-radius:4px; padding:8px 12px; color:#f8fafc; font-size:12px; font-family:'IBM Plex Sans'; width:100%; outline:none;">
+					<button type="submit" class="btn-primary" style="padding:8px 14px; font-size:12px; flex-shrink:0;">Join</button>
 				</form>
 			</div>
 		</div>
@@ -59,17 +54,14 @@
 		<!-- Bottom Bar -->
 		<div class="footer-bottom">
 			<div>
-				&copy; <?php echo date('Y'); ?> ZEYTECH COMMERCIAL OS &bull; CASABLANCA HUB-A1
+				&copy; <?php echo date('Y');?> ZeyTech. All rights reserved. Casablanca Central Fulfillment.
 			</div>
-			<div style="display:flex; gap:8px; font-family:'Space Mono'; font-size:10px; color:#8ea2bf;">
-				<span style="border:1px solid rgba(142,162,191,0.2); padding:2px 6px; border-radius:2px;">[CMI.GATEWAY]</span>
-				<span style="border:1px solid rgba(142,162,191,0.2); padding:2px 6px; border-radius:2px;">[CTM.LOGISTICS]</span>
-				<span style="border:1px solid rgba(142,162,191,0.2); padding:2px 6px; border-radius:2px;">[AMANA.EXPRESS]</span>
-				<span style="border:1px solid rgba(142,162,191,0.2); padding:2px 6px; border-radius:2px;">[HMAC.SHA256]</span>
+			<div style="display:flex; gap:16px;">
+				<a href="index.php">Terms of Service</a>
+				<a href="index.php">Privacy Policy</a>
+				<a href="track-orders.php">Logistics Policy</a>
 			</div>
 		</div>
 	</div>
 </footer>
-
-<!-- Include AI Shopping Advisor Chatbot Widget -->
-<?php include(__DIR__ . '/ai-chat-widget.php'); ?>
+<?php include('includes/ai-chat-widget.php');?>

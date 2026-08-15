@@ -43,10 +43,10 @@ $_SESSION['tp'] = $totalPrice;
 			<!-- Official App Logo & Brand Motif -->
 			<div class="col-xs-12 col-sm-4 col-md-3 logo-holder" style="padding-left:0;">
 				<div class="logo">
-					<a href="index.php" class="logo-brand" style="display:inline-flex; align-items:center; gap:10px; text-decoration:none;">
-						<img src="assets/images/logo.jpg" alt="ZeyTech Logo" style="height:38px; width:auto; object-fit:contain; border-radius:2px;">
-						<span style="font-family:'Fraunces', serif; font-size:22px; font-weight:700; color:#f2efe6; letter-spacing:-0.02em;">ZeyTech</span>
-						<span class="brand-badge">[HUB.A1]</span>
+					<a href="index.php" class="logo-brand">
+						<img src="assets/images/logo.jpg" alt="ZeyTech Logo" class="brand-logo-img">
+						<span class="brand-name">ZeyTech</span>
+						<span class="brand-badge">Casablanca Hub</span>
 					</a>
 				</div>		
 			</div>
@@ -54,28 +54,31 @@ $_SESSION['tp'] = $totalPrice;
 			<!-- Search Area -->
 			<div class="col-xs-12 col-sm-8 col-md-6 top-search-holder">
 				<div class="search-area">
-				    <form name="search" method="post" action="search-result.php" style="display:flex; align-items:center; width:100%; margin:0;">
-				        <input class="search-field" placeholder="Search hardware specifications, serials, models..." name="product" required="required" />
-				        <button class="search-button" type="submit" name="search" aria-label="Search">
-							<i class="fa fa-search" style="font-size:12px;"></i>
-						</button>    
+				    <form name="search" method="post" action="search-result.php" style="display:flex; margin:0;">
+				        <input class="search-field" placeholder="Search laptops, displays, audio, wearables..." name="product" required autocomplete="off" style="flex:1;">
+				        <button class="search-button" type="submit" aria-label="Search Catalog">
+				        	<i class="fa fa-search"></i>
+				        </button>
 				    </form>
 				</div>
 			</div>
 
-			<!-- Top Cart & Quick Links -->
-			<div class="col-xs-12 col-sm-12 col-md-3 top-cart-row" style="display:flex; justify-content:flex-end; align-items:center; padding-right:0; gap:10px;">
-				<a href="my-cart.php" class="cart-pill-btn">
-					<i class="fa fa-shopping-bag" style="font-size:14px; color:#c79a44;"></i>
-					<div style="display:flex; flex-direction:column; line-height:1.2;">
-						<span style="font-family:'Space Mono'; font-size:10px; color:#8ea2bf; text-transform:uppercase; letter-spacing:0.06em;">CART [<?php echo $totalQty; ?>]</span>
-						<span style="font-family:'Space Mono'; font-size:12px; font-weight:700; color:#d9b567;"><?php echo format_price($totalPrice); ?></span>
-					</div>
-					<?php if($totalQty > 0) { ?>
+			<!-- Cart Link & Summary -->
+			<div class="col-xs-12 col-sm-12 col-md-3 animate-dropdown top-cart-row-holder" style="padding-right:0; display:flex; justify-content:flex-end;">
+				<a href="my-cart.php" class="basket">
+					<div class="cart-icon-wrap">
+						<i class="fa fa-shopping-cart"></i>
 						<span class="cart-count-badge"><?php echo $totalQty; ?></span>
-					<?php } ?>
+					</div>
+					<div class="total-price-basket" style="text-align:left;">
+						<span class="lbl" style="font-size:11px; color:#94a3b8; display:block;">Cart Total:</span>
+						<span class="value" style="font-family:'Space Mono', monospace; font-size:13px; font-weight:700; color:#d9b45d;">
+							<?php echo format_price($totalPrice); ?>
+						</span>
+					</div>
 				</a>
 			</div>
+
 		</div>
 	</div>
 </div>

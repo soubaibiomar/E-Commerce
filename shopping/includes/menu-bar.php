@@ -1,18 +1,18 @@
 <div class="header-nav">
     <div class="container">
-        <div class="navbar navbar-default" role="navigation" style="border:none; margin:0;">
+        <div class="navbar navbar-default" role="navigation" style="border:none; margin:0; background:transparent;">
             <div class="navbar-header">
-                <button data-target="#mc-horizontal-menu-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button" style="background:#111d33; border:1px solid rgba(142,162,191,0.25); border-radius:2px;">
+                <button data-target="#mc-horizontal-menu-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button" style="background:#182847; border:1px solid rgba(226,232,240,0.15); border-radius:4px;">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar" style="background:#c79a44;"></span>
-                    <span class="icon-bar" style="background:#c79a44;"></span>
-                    <span class="icon-bar" style="background:#c79a44;"></span>
+                    <span class="icon-bar" style="background:#c59b43;"></span>
+                    <span class="icon-bar" style="background:#c59b43;"></span>
+                    <span class="icon-bar" style="background:#c59b43;"></span>
                 </button>
             </div>
             <div class="navbar-collapse collapse" id="mc-horizontal-menu-collapse" style="padding:0;">
 				<ul class="nav navbar-nav" style="display:flex; align-items:center; flex-wrap:wrap; width:100%;">
 					<li class="<?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?>">
-						<a href="index.php">Catalog Home</a>
+						<a href="index.php"><i class="fa fa-home" style="margin-right:4px;"></i> Home</a>
 					</li>
 					<?php 
 					$activeCid = intval($_GET['cid'] ?? 0);
@@ -25,15 +25,13 @@
 					</li>
 					<?php } ?>
 					
-					<!-- Enterprise Console & Telemetry Quick Links -->
-					<li style="margin-left:auto;">
-						<a href="zeytech-ops-console.html" class="admin-link-pill" target="_blank" style="display:inline-flex; align-items:center; gap:6px;">
-							[OPS.CONSOLE]
+					<!-- Quick Links -->
+					<li style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+						<a href="zeytech-ops-console.html" class="nav-action-pill" target="_blank">
+							<i class="fa fa-sliders"></i> Operations
 						</a>
-					</li>
-					<li>
-						<a href="zeytech-platform.php" target="_blank" style="color:#8ea2bf; font-family:'Space Mono'; font-size:11px; padding:12px 14px;">
-							[TELEMETRY]
+						<a href="zeytech-platform.php" class="nav-action-pill" target="_blank" style="background:rgba(226,232,240,0.06); border-color:rgba(226,232,240,0.15); color:#94a3b8 !important;">
+							<i class="fa fa-line-chart"></i> Telemetry
 						</a>
 					</li>
 				</ul>

@@ -36,12 +36,13 @@ if (!empty($searchTr)) {
     <link rel="stylesheet" href="assets/css/modern-storefront.css">
     <style>
         .tracking-card {
-            background: #0c1526;
-            border-radius: 2px;
-            border: 1px solid rgba(142, 162, 191, 0.18);
+            background: #121e36;
+            border-radius: 8px;
+            border: 1px solid rgba(226, 232, 240, 0.12);
             padding: 32px;
             margin-top: 24px;
             margin-bottom: 40px;
+            box-shadow: var(--shadow-sm);
         }
 
         .timeline-steps {
@@ -54,11 +55,11 @@ if (!empty($searchTr)) {
         .timeline-steps::before {
             content: "";
             position: absolute;
-            top: 18px;
+            top: 20px;
             left: 40px;
             right: 40px;
             height: 2px;
-            background: rgba(142, 162, 191, 0.18);
+            background: rgba(226, 232, 240, 0.12);
             z-index: 1;
         }
 
@@ -70,45 +71,43 @@ if (!empty($searchTr)) {
         }
 
         .step-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 2px;
-            background: #111d33;
-            color: #8ea2bf;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #182847;
+            color: #94a3b8;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 14px;
             margin: 0 auto 10px auto;
-            border: 1px solid rgba(142, 162, 191, 0.25);
+            border: 1px solid rgba(226, 232, 240, 0.15);
             transition: all 0.2s ease;
         }
 
         .step-completed .step-icon {
-            background: #c79a44;
-            color: #080e1a;
-            border-color: #d9b567;
+            background: #c59b43;
+            color: #0b162c;
+            border-color: #d9b45d;
             font-weight: 700;
         }
 
         .step-active .step-icon {
-            background: #111d33;
-            color: #d9b567;
-            border-color: #c79a44;
-            box-shadow: 0 0 0 3px rgba(199, 154, 68, 0.25);
+            background: #182847;
+            color: #d9b45d;
+            border-color: #c59b43;
+            box-shadow: 0 0 0 4px rgba(197, 155, 67, 0.2);
         }
 
         .step-label {
-            font-size: 12px;
-            font-weight: 700;
-            font-family: 'Space Mono', monospace;
-            color: #f2efe6;
-            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
         }
 
         .step-sub {
-            font-size: 11px;
-            color: #8ea2bf;
+            font-size: 12px;
+            color: #94a3b8;
             margin-top: 2px;
         }
 
