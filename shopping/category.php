@@ -59,7 +59,7 @@ render_seo_meta($catName . " Catalog & Hardware | ZeyTech", $catDesc, "category.
 	    <link rel="stylesheet" href="assets/css/modern-storefront.css">
 		<link rel="shortcut icon" href="assets/images/favicon.ico">
 	</head>
-    <body class="cnt-home" style="background:#080e1a; color:#f2efe6;">
+    <body class="cnt-home" style="background:#0b162c; color:#f8fafc;">
 	
 <header class="header-style-1">
 <?php include('includes/top-header.php');?>
@@ -70,15 +70,10 @@ render_seo_meta($catName . " Catalog & Hardware | ZeyTech", $catDesc, "category.
 <div class="body-content outer-top-xs" style="padding-top:24px; padding-bottom:60px;">
 	<div class='container'>
 		<!-- Category Header Banner -->
-		<div class="modern-hero-banner" style="margin-bottom:28px; padding:32px 36px;">
+		<div class="modern-hero-banner" style="margin-bottom:28px; padding:32px 36px; border-radius:8px;">
 			<div class="hero-eyebrow">
-				<span class="hexagram-mark" style="width:16px; height:16px;">
-					<svg class="hexagram-svg" viewBox="0 0 24 24">
-						<polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-						<polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-					</svg>
-				</span>
-				[CATALOG.DOMAIN] &bull; CASABLANCA CENTRAL STOCK
+				<i class="fa fa-th-large" style="color:#d9b45d;"></i>
+				Hardware Catalog &bull; Casablanca Central Stock
 			</div>
 			<h1 class="hero-headline" style="font-size:28px; margin-bottom:8px;"><?php echo e($catName); ?></h1>
 			<p class="hero-subtext" style="margin-bottom:0; font-size:13px;"><?php echo e($curCat['categoryDescription'] ?? 'Verified enterprise and commercial hardware with real-time regional settlement.'); ?></p>
@@ -88,9 +83,9 @@ render_seo_meta($catName . " Catalog & Hardware | ZeyTech", $catDesc, "category.
 			<!-- Sidebar -->
 			<div class='col-md-3 sidebar'>
 				<!-- Subcategories -->
-				<div class="manifest-panel" style="padding:16px; margin-bottom:20px;">
-					<div style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#c79a44; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; border-bottom:1px solid rgba(142,162,191,0.18); padding-bottom:8px;">
-						[SUB-DOMAINS]
+				<div class="manifest-panel" style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:8px; padding:16px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
+					<div style="font-size:11px; font-weight:600; color:#d9b45d; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px; border-bottom:1px solid rgba(226,232,240,0.10); padding-bottom:8px;">
+						Subcategories
 					</div>
 					<ul class="list-unstyled" style="margin:0;">
 						<?php 
@@ -99,21 +94,21 @@ render_seo_meta($catName . " Catalog & Hardware | ZeyTech", $catDesc, "category.
 							foreach ($subcats as $sc) {
 						?>
 						<li style="margin-bottom:6px;">
-							<a href="sub-category.php?scid=<?php echo e($sc['id']);?>" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; color:#8ea2bf; font-size:13px; text-decoration:none; border-radius:2px; transition:all 0.15s ease;">
+							<a href="sub-category.php?scid=<?php echo e($sc['id']);?>" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; color:#94a3b8; font-size:13px; text-decoration:none; border-radius:4px; transition:all 0.15s ease;">
 								<span><?php echo e($sc['subcategory']);?></span>
-								<i class="fa fa-angle-right" style="font-size:11px; color:#5e7391;"></i>
+								<i class="fa fa-angle-right" style="font-size:11px; color:#64748b;"></i>
 							</a>
 						</li>
 						<?php } } else { ?>
-						<li style="padding:8px; font-family:'Space Mono'; font-size:11px; color:#5e7391;">None registered</li>
+						<li style="padding:8px; font-size:12px; color:#64748b;">None registered</li>
 						<?php } ?>
 					</ul>
 				</div>
 
 				<!-- All Categories Filter -->
-				<div class="manifest-panel" style="padding:16px; margin-bottom:20px;">
-					<div style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#c79a44; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; border-bottom:1px solid rgba(142,162,191,0.18); padding-bottom:8px;">
-						[ALL DOMAINS]
+				<div class="manifest-panel" style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:8px; padding:16px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
+					<div style="font-size:11px; font-weight:600; color:#d9b45d; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px; border-bottom:1px solid rgba(226,232,240,0.10); padding-bottom:8px;">
+						All Categories
 					</div>
 					<ul class="list-unstyled" style="margin:0;">
 						<?php 
@@ -122,9 +117,9 @@ render_seo_meta($catName . " Catalog & Hardware | ZeyTech", $catDesc, "category.
 							$isActive = ($cid === intval($ac['id']));
 						?>
 						<li style="margin-bottom:4px;">
-							<a href="category.php?cid=<?php echo e($ac['id']);?>" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; color:<?php echo $isActive ? '#d9b567' : '#8ea2bf'; ?>; background:<?php echo $isActive ? 'rgba(199,154,68,0.12)' : 'transparent'; ?>; font-family:'IBM Plex Sans'; font-size:13px; font-weight:<?php echo $isActive ? '700' : '400'; ?>; text-decoration:none; border-radius:2px;">
+							<a href="category.php?cid=<?php echo e($ac['id']);?>" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; color:<?php echo $isActive ? '#d9b45d' : '#94a3b8'; ?>; background:<?php echo $isActive ? 'rgba(197,155,67,0.12)' : 'transparent'; ?>; font-size:13px; font-weight:<?php echo $isActive ? '600' : '400'; ?>; text-decoration:none; border-radius:4px;">
 								<span><?php echo e($ac['categoryName']);?></span>
-								<?php if($isActive) { ?><span style="font-family:'Space Mono'; font-size:10px; color:#d9b567;">[ACTIVE]</span><?php } ?>
+								<?php if($isActive) { ?><span style="font-size:10px; color:#d9b45d; font-weight:600;">● Active</span><?php } ?>
 							</a>
 						</li>
 						<?php } ?>
@@ -169,10 +164,10 @@ render_seo_meta($catName . " Catalog & Hardware | ZeyTech", $catDesc, "category.
 
 								<?php if ($row['productAvailability'] == 'In Stock') { ?>
 								<a href="category.php?cid=<?php echo e($cid);?>&action=add&id=<?php echo e($row['id']); ?>" class="btn-add-cart-modern">
-									+ ADD
+									<i class="fa fa-cart-plus"></i> Add
 								</a>
 								<?php } else { ?>
-								<span class="tag-pill tag-danger">[OUT OF STOCK]</span>
+								<span style="font-size:11px; color:#ef4444; font-weight:600;">Out of Stock</span>
 								<?php } ?>
 							</div>
 						</div>
@@ -181,10 +176,10 @@ render_seo_meta($catName . " Catalog & Hardware | ZeyTech", $catDesc, "category.
 						} 
 					} else { 
 					?>
-					<div class="col-xs-12" style="text-align:center; padding:60px 20px; background:#0c1526; border-radius:2px; border:1px solid rgba(142,162,191,0.18);">
-						<h3 style="font-family:'Fraunces', serif; color:#f2efe6; font-weight:700;">No Items In This Domain</h3>
-						<p style="color:#8ea2bf; font-family:'Space Mono'; font-size:12px; margin-bottom:20px;">Inventory is currently being reallocated at Casablanca Hub-A1.</p>
-						<a href="index.php" class="btn-primary">RETURN TO CATALOG</a>
+					<div class="col-xs-12" style="text-align:center; padding:60px 20px; background:#121e36; border-radius:8px; border:1px solid rgba(226,232,240,0.12);">
+						<h3 style="font-family:'Fraunces', serif; color:#ffffff; font-weight:700;">No Items In This Category</h3>
+						<p style="color:#94a3b8; font-size:13px; margin-bottom:20px;">Inventory is currently being replenished at Casablanca Central Stock.</p>
+						<a href="index.php" class="btn-primary" style="display:inline-block; border-radius:4px; padding:8px 18px; text-decoration:none;">Return to Catalog</a>
 					</div>
 					<?php } ?>
 				</div>

@@ -67,7 +67,7 @@ if (isset($_POST['login'])) {
 		<meta charset="utf-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-	    <title>ZeyTech | Commercial Authentication &amp; Identity</title>
+	    <title>Customer Sign In &amp; Register | ZeyTech</title>
 
 	    <link rel="preconnect" href="https://fonts.googleapis.com">
 	    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +101,7 @@ function userAvailability() {
 }
 </script>
 	</head>
-    <body class="cnt-home" style="background:#080e1a; color:#f2efe6;">
+    <body class="cnt-home" style="background:#0b162c; color:#f8fafc;">
 	
 <header class="header-style-1">
 <?php include('includes/top-header.php');?>
@@ -114,33 +114,33 @@ function userAvailability() {
 		<div class="row">
 			<!-- Sign-in -->			
 			<div class="col-md-6 col-sm-6" style="margin-bottom:24px;">
-				<div class="manifest-panel" style="padding:32px; height:100%;">
-					<div style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#c79a44; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">
-						[AUTH.CUSTOMER_SIGNIN]
+				<div class="manifest-panel" style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:8px; padding:32px; height:100%; box-shadow:var(--shadow-sm);">
+					<div style="font-size:11px; font-weight:600; color:#d9b45d; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">
+						<i class="fa fa-lock"></i> Customer Sign In
 					</div>
-					<h2 style="font-family:'Fraunces', serif; font-size:24px; font-weight:700; color:#f2efe6; margin:0 0 8px 0; letter-spacing:-0.02em;">Welcome Back</h2>
-					<p style="font-size:13px; color:#8ea2bf; margin-bottom:24px;">Access your saved ledger, order tracking, and custom quotes.</p>
+					<h2 style="font-family:'Fraunces', serif; font-size:24px; font-weight:700; color:#ffffff; margin:0 0 8px 0;">Welcome Back</h2>
+					<p style="font-size:13px; color:#94a3b8; margin-bottom:24px;">Access your orders, saved items, and personalized quotes.</p>
 					
 					<form class="register-form" method="post">
 						<?php if (!empty($_SESSION['errmsg'])) { ?>
-						<div style="background:rgba(239,68,68,0.12); border:1px solid #ef4444; color:#fca5a5; padding:10px 14px; border-radius:2px; font-family:'Space Mono'; font-size:12px; margin-bottom:18px;">
-							[ERROR: <?php echo e($_SESSION['errmsg']); $_SESSION['errmsg'] = ""; ?>]
+						<div style="background:rgba(239,68,68,0.12); border:1px solid #ef4444; color:#fca5a5; padding:10px 14px; border-radius:4px; font-size:12px; margin-bottom:18px;">
+							<?php echo e($_SESSION['errmsg']); $_SESSION['errmsg'] = ""; ?>
 						</div>
 						<?php } ?>
 						
 						<div class="form-group" style="margin-bottom:16px;">
-							<label style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#8ea2bf; text-transform:uppercase;" for="exampleInputEmail1">EMAIL ADDRESS *</label>
-							<input type="email" name="email" class="form-control" id="exampleInputEmail1" required style="height:44px; border-radius:2px; border:1px solid rgba(142,162,191,0.25); background:#080e1a; color:#f2efe6; font-family:'IBM Plex Sans'; font-size:13px;">
+							<label style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;" for="exampleInputEmail1">Email Address *</label>
+							<input type="email" name="email" class="form-control" id="exampleInputEmail1" required style="height:44px; border-radius:4px; border:1px solid rgba(226,232,240,0.15); background:#0b162c; color:#ffffff; font-size:13px;">
 						</div>
 						<div class="form-group" style="margin-bottom:16px;">
-							<label style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#8ea2bf; text-transform:uppercase;" for="exampleInputPassword1">PASSWORD *</label>
-							<input type="password" name="password" class="form-control" id="exampleInputPassword1" required style="height:44px; border-radius:2px; border:1px solid rgba(142,162,191,0.25); background:#080e1a; color:#f2efe6; font-family:'IBM Plex Sans'; font-size:13px;">
+							<label style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;" for="exampleInputPassword1">Password *</label>
+							<input type="password" name="password" class="form-control" id="exampleInputPassword1" required style="height:44px; border-radius:4px; border:1px solid rgba(226,232,240,0.15); background:#0b162c; color:#ffffff; font-size:13px;">
 						</div>
 						<div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
-							<a href="forgot-password.php" style="font-family:'Space Mono'; font-size:11px; color:#d9b567; text-decoration:none;">Forgot credentials?</a>
+							<a href="forgot-password.php" style="font-size:12px; color:#d9b45d; text-decoration:none;">Forgot password?</a>
 						</div>
-						<button type="submit" class="btn-primary" name="login" style="width:100%; height:44px; font-family:'Space Mono'; font-size:12px;">
-							SIGN IN TO ACCOUNT &rarr;
+						<button type="submit" class="btn-primary" name="login" style="width:100%; height:44px; font-size:13px; border-radius:4px; justify-content:center;">
+							Sign In &rarr;
 						</button>
 					</form>					
 				</div>
@@ -148,42 +148,42 @@ function userAvailability() {
 
 			<!-- Create a new account -->
 			<div class="col-md-6 col-sm-6" style="margin-bottom:24px;">
-				<div class="manifest-panel" style="padding:32px; height:100%;">
-					<div style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#c79a44; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">
-						[AUTH.NEW_REGISTRATION]
+				<div class="manifest-panel" style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:8px; padding:32px; height:100%; box-shadow:var(--shadow-sm);">
+					<div style="font-size:11px; font-weight:600; color:#d9b45d; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">
+						<i class="fa fa-user-plus"></i> New Customer
 					</div>
-					<h2 style="font-family:'Fraunces', serif; font-size:24px; font-weight:700; color:#f2efe6; margin:0 0 8px 0; letter-spacing:-0.02em;">Create Account</h2>
-					<p style="font-size:13px; color:#8ea2bf; margin-bottom:24px;">Join ZeyTech for instant checkout and multi-currency commercial settlement.</p>
+					<h2 style="font-family:'Fraunces', serif; font-size:24px; font-weight:700; color:#ffffff; margin:0 0 8px 0;">Create Account</h2>
+					<p style="font-size:13px; color:#94a3b8; margin-bottom:24px;">Join ZeyTech for express delivery and multi-currency checkout.</p>
 					
 					<form class="register-form" role="form" method="post" name="register" onSubmit="return valid();">
 						<div class="form-group" style="margin-bottom:14px;">
-							<label style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#8ea2bf; text-transform:uppercase;" for="fullname">FULL NAME *</label>
-							<input type="text" class="form-control" id="fullname" name="fullname" required="required" style="height:44px; border-radius:2px; border:1px solid rgba(142,162,191,0.25); background:#080e1a; color:#f2efe6; font-family:'IBM Plex Sans'; font-size:13px;">
+							<label style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;" for="fullname">Full Name *</label>
+							<input type="text" class="form-control" id="fullname" name="fullname" required="required" style="height:44px; border-radius:4px; border:1px solid rgba(226,232,240,0.15); background:#0b162c; color:#ffffff; font-size:13px;">
 						</div>
 
 						<div class="form-group" style="margin-bottom:14px;">
-							<label style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#8ea2bf; text-transform:uppercase;" for="email">EMAIL ADDRESS *</label>
-							<input type="email" class="form-control" id="email" onBlur="userAvailability()" name="emailid" required style="height:44px; border-radius:2px; border:1px solid rgba(142,162,191,0.25); background:#080e1a; color:#f2efe6; font-family:'IBM Plex Sans'; font-size:13px;">
-							<span id="user-availability-status1" style="font-size:11px; font-family:'Space Mono'; color:#d9b567;"></span>
+							<label style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;" for="email">Email Address *</label>
+							<input type="email" class="form-control" id="email" onBlur="userAvailability()" name="emailid" required style="height:44px; border-radius:4px; border:1px solid rgba(226,232,240,0.15); background:#0b162c; color:#ffffff; font-size:13px;">
+							<span id="user-availability-status1" style="font-size:11px; font-family:'Space Mono'; color:#d9b45d;"></span>
 						</div>
 
 						<div class="form-group" style="margin-bottom:14px;">
-							<label style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#8ea2bf; text-transform:uppercase;" for="contactno">PHONE NUMBER *</label>
-							<input type="text" class="form-control" id="contactno" name="contactno" maxlength="10" required style="height:44px; border-radius:2px; border:1px solid rgba(142,162,191,0.25); background:#080e1a; color:#f2efe6; font-family:'IBM Plex Sans'; font-size:13px;">
+							<label style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;" for="contactno">Phone Number *</label>
+							<input type="text" class="form-control" id="contactno" name="contactno" maxlength="10" required style="height:44px; border-radius:4px; border:1px solid rgba(226,232,240,0.15); background:#0b162c; color:#ffffff; font-size:13px;">
 						</div>
 
 						<div class="form-group" style="margin-bottom:14px;">
-							<label style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#8ea2bf; text-transform:uppercase;" for="password">PASSWORD *</label>
-							<input type="password" class="form-control" id="password" name="password" required style="height:44px; border-radius:2px; border:1px solid rgba(142,162,191,0.25); background:#080e1a; color:#f2efe6; font-family:'IBM Plex Sans'; font-size:13px;">
+							<label style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;" for="password">Password *</label>
+							<input type="password" class="form-control" id="password" name="password" required style="height:44px; border-radius:4px; border:1px solid rgba(226,232,240,0.15); background:#0b162c; color:#ffffff; font-size:13px;">
 						</div>
 
 						<div class="form-group" style="margin-bottom:20px;">
-							<label style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#8ea2bf; text-transform:uppercase;" for="confirmpassword">CONFIRM PASSWORD *</label>
-							<input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required style="height:44px; border-radius:2px; border:1px solid rgba(142,162,191,0.25); background:#080e1a; color:#f2efe6; font-family:'IBM Plex Sans'; font-size:13px;">
+							<label style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;" for="confirmpassword">Confirm Password *</label>
+							<input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required style="height:44px; border-radius:4px; border:1px solid rgba(226,232,240,0.15); background:#0b162c; color:#ffffff; font-size:13px;">
 						</div>
 
-						<button type="submit" name="submit" class="btn-primary" id="submit" style="width:100%; height:44px; font-family:'Space Mono'; font-size:12px;">
-							REGISTER ACCOUNT &rarr;
+						<button type="submit" name="submit" class="btn-primary" id="submit" style="width:100%; height:44px; font-size:13px; border-radius:4px; justify-content:center;">
+							Register Account &rarr;
 						</button>
 					</form>
 				</div>
