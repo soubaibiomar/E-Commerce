@@ -13,7 +13,7 @@ if (isset($_GET['action']) && $_GET['action'] == "add") {
 		$product = db_fetch_one("SELECT id, productPrice FROM products WHERE id=?", [$id], "i");
 		if ($product) {
 			$_SESSION['cart'][$product['id']] = array("quantity" => 1, "price" => $product['productPrice']);
-			echo "<script>alert('Product added to your bag.'); window.location='my-cart.php';</script>";
+			echo "<script>alert('Product added to your cart.'); window.location='my-cart.php';</script>";
             exit();
 		}
 	}
@@ -30,9 +30,9 @@ if (isset($_GET['pid']) && isset($_GET['action']) && $_GET['action'] == "wishlis
         $exists = db_fetch_one("SELECT id FROM wishlist WHERE userId=? AND productId=?", [$uid, $pid], "ii");
         if (!$exists) {
             db_query("INSERT INTO wishlist(userId, productId) VALUES(?, ?)", [$uid, $pid], "ii");
-            echo "<script>alert('Product added to saved manifest.');</script>";
+            echo "<script>alert('Product added to saved items.');</script>";
         } else {
-            echo "<script>alert('Product already in saved manifest.');</script>";
+            echo "<script>alert('Product already in saved items.');</script>";
         }
         echo "<script>window.location='my-wishlist.php';</script>";
         exit();
@@ -54,7 +54,7 @@ if (isset($_GET['pid']) && isset($_GET['action']) && $_GET['action'] == "wishlis
 	    <link rel="stylesheet" href="assets/css/modern-storefront.css">
 		<link rel="shortcut icon" href="assets/images/favicon.ico">
 	</head>
-    <body class="cnt-home" style="background:#080e1a; color:#f2efe6;">
+    <body class="cnt-home" style="background:#0b162c; color:#f8fafc;">
 <header class="header-style-1">
 <?php include('includes/top-header.php');?>
 <?php include('includes/main-header.php');?>
@@ -64,36 +64,33 @@ if (isset($_GET['pid']) && isset($_GET['action']) && $_GET['action'] == "wishlis
 <div class="body-content outer-top-xs" style="padding-top:24px; padding-bottom:60px;">
 	<div class='container'>
 		<!-- Search Banner Header -->
-		<div class="modern-hero-banner" style="padding:28px 36px; margin-bottom:28px;">
+		<div class="modern-hero-banner" style="padding:28px 36px; margin-bottom:28px; border-radius:8px;">
 			<div class="hero-eyebrow">
-				<span class="hexagram-mark" style="width:16px; height:16px;">
-					<svg class="hexagram-svg" viewBox="0 0 24 24">
-						<polygon points="12,2 22,18 2,18" stroke="#c79a44" fill="none" stroke-width="1.5"/>
-						<polygon points="12,22 22,6 2,6" stroke="#d9b567" fill="none" stroke-width="1.5"/>
-					</svg>
-				</span>
-				[SEARCH.CATALOG_QUERY]
+				<i class="fa fa-search" style="color:#d9b45d;"></i>
+				Search Results &bull; Casablanca Central Stock
 			</div>
-			<h1 class="hero-headline" style="font-size:26px; margin-bottom:6px;">Search Results for "<?php echo e($searchTerm); ?>"</h1>
-			<p class="hero-subtext" style="margin-bottom:0; font-size:13px;">Real-time settlement enabled: <strong style="color:#d9b567; font-family:'Space Mono';"><?php echo get_current_currency()['code']; ?> (<?php echo get_current_currency()['symbol']; ?>)</strong></p>
+			<h1 class="hero-headline" style="font-size:28px; margin-bottom:8px;">
+				Results for "<?php echo e($searchTerm); ?>"
+			</h1>
+			<p class="hero-subtext" style="margin-bottom:0; font-size:13px;">Showing available hardware matching your query.</p>
 		</div>
 
 		<div class='row outer-bottom-sm'>
-			<!-- Sidebar Categories -->
+			<!-- Sidebar -->
 			<div class='col-md-3 sidebar'>
-				<div class="manifest-panel" style="padding:16px; margin-bottom:20px;">
-					<div style="font-family:'Space Mono'; font-size:11px; font-weight:700; color:#c79a44; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; border-bottom:1px solid rgba(142,162,191,0.18); padding-bottom:8px;">
-						[CATALOG.DOMAINS]
+				<div class="manifest-panel" style="background:#121e36; border:1px solid rgba(226,232,240,0.12); border-radius:8px; padding:16px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
+					<div style="font-size:11px; font-weight:600; color:#d9b45d; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px; border-bottom:1px solid rgba(226,232,240,0.10); padding-bottom:8px;">
+						All Categories
 					</div>
 					<ul class="list-unstyled" style="margin:0;">
 						<?php 
 						$allCats = db_fetch_all("SELECT id, categoryName FROM category ORDER BY categoryName ASC");
-						foreach ($allCats as $row) {
+						foreach ($allCats as $ac) {
 						?>
-						<li style="margin-bottom:6px;">
-							<a href="category.php?cid=<?php echo e($row['id']);?>" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; color:#8ea2bf; font-size:13px; text-decoration:none; border-radius:2px;">
-								<span><?php echo e($row['categoryName']);?></span>
-								<i class="fa fa-angle-right" style="font-size:11px; color:#5e7391;"></i>
+						<li style="margin-bottom:4px;">
+							<a href="category.php?cid=<?php echo e($ac['id']);?>" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; color:#94a3b8; font-size:13px; text-decoration:none; border-radius:4px; transition:all 0.15s ease;">
+								<span><?php echo e($ac['categoryName']);?></span>
+								<i class="fa fa-angle-right" style="font-size:11px; color:#64748b;"></i>
 							</a>
 						</li>
 						<?php } ?>
@@ -119,7 +116,7 @@ if (isset($_GET['pid']) && isset($_GET['action']) && $_GET['action'] == "wishlis
 								<span class="product-badge-stock">-<?php echo e($discount); ?>%</span>
 								<?php } ?>
 								<a href="product-details.php?pid=<?php echo e($row['id']);?>" style="display:flex; align-items:center; justify-content:center; width:100%; height:100%;">
-									<img src="<?php echo e(get_product_image_url($row)); ?>" alt="<?php echo e($row['productName']);?>">
+									<img src="<?php echo e(get_product_image_url($row)); ?>" alt="<?php echo e($row['productName']);?>" onerror="handleImageError(this)">
 								</a>
 							</div>
 
@@ -138,10 +135,10 @@ if (isset($_GET['pid']) && isset($_GET['action']) && $_GET['action'] == "wishlis
 
 								<?php if ($row['productAvailability'] == 'In Stock') { ?>
 								<a href="search-result.php?product=<?php echo urlencode($searchTerm); ?>&action=add&id=<?php echo e($row['id']); ?>" class="btn-add-cart-modern">
-									+ ADD
+									<i class="fa fa-cart-plus"></i> Add
 								</a>
 								<?php } else { ?>
-								<span class="tag-pill tag-danger">[OUT OF STOCK]</span>
+								<span style="font-size:11px; color:#ef4444; font-weight:600;">Out of Stock</span>
 								<?php } ?>
 							</div>
 						</div>
@@ -150,10 +147,10 @@ if (isset($_GET['pid']) && isset($_GET['action']) && $_GET['action'] == "wishlis
 						} 
 					} else { 
 					?>
-					<div class="col-xs-12" style="text-align:center; padding:60px 20px; background:#0c1526; border-radius:2px; border:1px solid rgba(142,162,191,0.18);">
-						<h3 style="font-family:'Fraunces', serif; color:#f2efe6; font-weight:700;">No Matching Hardware Located</h3>
-						<p style="color:#8ea2bf; font-family:'Space Mono'; font-size:12px; margin-bottom:20px;">Try searching for generic specifications, brands, or part numbers.</p>
-						<a href="index.php" class="btn-primary">RETURN TO CATALOG</a>
+					<div class="col-xs-12" style="text-align:center; padding:60px 20px; background:#121e36; border-radius:8px; border:1px solid rgba(226,232,240,0.12);">
+						<h3 style="font-family:'Fraunces', serif; color:#ffffff; font-weight:700;">No Matching Hardware Found</h3>
+						<p style="color:#94a3b8; font-size:13px; margin-bottom:20px;">Try searching for specific brands, models, or categories.</p>
+						<a href="index.php" class="btn-primary" style="display:inline-block; border-radius:4px; padding:8px 18px; text-decoration:none;">Return to Catalog</a>
 					</div>
 					<?php } ?>
 				</div>

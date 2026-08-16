@@ -146,7 +146,7 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 					$products = db_fetch_all("SELECT p.*, c.categoryName FROM products p LEFT JOIN category c ON p.category = c.id ORDER BY p.id ASC LIMIT 9");
 					foreach($products as $row) {
 						$pid = intval($row['id']);
-						$img = !empty($row['productImage1']) ? 'admin/productimages/'.$pid.'/'.$row['productImage1'] : 'assets/images/blank.gif';
+						$img = get_product_image_url($row, 1);
 						$stockQty = intval($row['in_stock_units'] ?? 10);
 						$isLowStock = ($stockQty > 0 && $stockQty <= 5);
 						$isOutOfStock = ($stockQty <= 0);
@@ -168,7 +168,7 @@ if(isset($_GET['action']) && $_GET['action']=="add"){
 									</span>
 								<?php } ?>
 								<a href="product-details.php?pid=<?php echo $pid; ?>" style="display:flex; align-items:center; justify-content:center; width:100%; height:100%;">
-									<img src="<?php echo e($img); ?>" alt="<?php echo e($row['productName']); ?>" onerror="this.src='assets/images/blank.gif';">
+									<img src="<?php echo e($img); ?>" alt="<?php echo e($row['productName']); ?>" onerror="handleImageError(this)">
 								</a>
 							</div>
 

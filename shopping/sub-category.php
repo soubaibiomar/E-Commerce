@@ -122,7 +122,7 @@ render_seo_meta($subName . " - Hardware Catalog | ZeyTech", $subDesc, "sub-categ
 								<span class="product-badge-stock">-<?php echo e($discount); ?>%</span>
 								<?php } ?>
 								<a href="product-details.php?pid=<?php echo e($row['id']);?>" style="display:flex; align-items:center; justify-content:center; width:100%; height:100%;">
-									<img src="<?php echo e(get_product_image_url($row)); ?>" alt="<?php echo e($row['productName']);?>">
+									<img src="<?php echo e(get_product_image_url($row)); ?>" alt="<?php echo e($row['productName']);?>" onerror="handleImageError(this)">
 								</a>
 							</div>
 

@@ -64,4 +64,13 @@
 		</div>
 	</div>
 </footer>
+<script>
+function handleImageError(img) {
+    if (!img || img.dataset.hasFailed) return;
+    img.dataset.hasFailed = "true";
+    var alt = img.alt || "ZeyTech Product";
+    var encodedName = encodeURIComponent(alt);
+    img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230b162c"/><rect x="8" y="8" width="384" height="284" rx="6" fill="%23121e36" stroke="%23c59b43" stroke-width="1.5"/><text x="50%" y="45%" fill="%23d9b45d" font-family="sans-serif" font-size="28" text-anchor="middle">⚡</text><text x="50%" y="65%" fill="%23ffffff" font-family="sans-serif" font-weight="bold" font-size="13" text-anchor="middle">' + alt.replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</text></svg>';
+}
+</script>
 <?php include('includes/ai-chat-widget.php');?>

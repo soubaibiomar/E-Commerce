@@ -168,7 +168,7 @@ if (isset($_POST['shipupdate'])) {
 									<td style="text-align:center; padding:14px;"><input type="checkbox" name="remove_code[]" value="<?php echo e($pid);?>"></td>
 									<td style="padding:14px;">
 										<a href="product-details.php?pid=<?php echo e($pid);?>">
-											<img src="admin/productimages/<?php echo e($pid);?>/<?php echo e($row['productImage1']);?>" style="width:54px; height:54px; object-fit:contain; border-radius:4px; background:#0b162c; border:1px solid rgba(226,232,240,0.15);">
+											<img src="<?php echo e(get_product_image_url($row, 1)); ?>" alt="<?php echo e($row['productName']);?>" style="width:54px; height:54px; object-fit:contain; border-radius:4px; background:#0b162c; border:1px solid rgba(226,232,240,0.15);">
 										</a>
 									</td>
 									<td style="padding:14px;">
