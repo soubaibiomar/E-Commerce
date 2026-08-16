@@ -1,5 +1,9 @@
 # 🏢 ZeyTech AI Commerce OS — Complete System Documentation & Architecture Specification
 
+<div align="center">
+  <img src="docs/project_thumbnail.jpg" alt="ZeyTech AI Commerce OS Project Banner" width="100%" style="border-radius: 10px; margin: 16px 0;" />
+</div>
+
 ---
 
 ## 1. Executive Summary

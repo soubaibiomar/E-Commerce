@@ -1,6 +1,10 @@
 # 🏢 ZeyTech AI Commerce OS
 > **Autonomous Multi-Agent Enterprise Commerce Platform with Human-in-the-Loop Governance**
 
+<div align="center">
+  <img src="docs/project_thumbnail.jpg" alt="ZeyTech AI Commerce OS Project Banner" width="100%" style="border-radius: 10px; margin: 16px 0;" />
+</div>
+
 [![PHP 8.2](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
 [![MariaDB 11.2](https://img.shields.io/badge/MariaDB-11.2-003545?style=for-the-badge&logo=mariadb&logoColor=white)](https://mariadb.org/)
 [![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
